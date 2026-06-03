@@ -574,6 +574,65 @@ table { width: 100%; border-collapse: collapse; }
     }
   }
 </style>
+
+<style id="counseling-mobile-compact-20260603">
+/* Mobile compact patch: reduce text size and keep the counseling dialog visible above the browser bottom bar. */
+@media (max-width: 768px) {
+  html, body { font-size: 14px !important; }
+  .header { padding: 8px 10px !important; }
+  .header h1 { font-size: .96rem !important; margin-bottom: 1px !important; }
+  .header-info { font-size: .72rem !important; line-height: 1.25 !important; }
+  .main { gap: 8px !important; padding: 8px !important; }
+
+  .chat-area {
+    height: calc(100svh - 58px) !important;
+    min-height: calc(100svh - 58px) !important;
+    border-radius: 14px !important;
+  }
+
+  .mobile-case-summary {
+    padding: 8px !important;
+    margin-bottom: 6px !important;
+    border-radius: 12px !important;
+  }
+  .mobile-case-top { gap: 5px !important; margin-bottom: 6px !important; }
+  .mobile-case-title { font-size: .9rem !important; line-height: 1.22 !important; }
+  .mobile-case-selector { min-height: 34px !important; padding: 5px 8px !important; font-size: .82rem !important; border-radius: 9px !important; }
+  .mobile-chief-complaint {
+    padding: 7px 8px !important;
+    margin-bottom: 6px !important;
+    font-size: .82rem !important;
+    line-height: 1.38 !important;
+    border-radius: 9px !important;
+  }
+  .mobile-progress-row { gap: 6px !important; margin-bottom: 6px !important; }
+  .mobile-pill { padding: 5px 6px !important; font-size: .76rem !important; border-radius: 9px !important; }
+  .mobile-action-row { gap: 6px !important; }
+  .mobile-action-row .btn { min-height: 34px !important; padding: 6px !important; font-size: .78rem !important; border-radius: 9px !important; }
+
+  .chat-header { padding: 7px 9px !important; }
+  .chat-title { font-size: .86rem !important; }
+  .status-badge { font-size: .68rem !important; padding: 3px 7px !important; }
+  .chat-messages { padding: 8px !important; gap: 8px !important; }
+  .message { gap: 6px !important; max-width: 98% !important; }
+  .message-avatar { width: 26px !important; height: 26px !important; font-size: .78rem !important; border-radius: 8px !important; }
+  .message-content { padding: 8px 9px !important; font-size: .84rem !important; line-height: 1.48 !important; }
+
+  .chat-input {
+    position: static !important;
+    padding: 7px !important;
+    padding-bottom: max(7px, env(safe-area-inset-bottom)) !important;
+  }
+  .input-row { grid-template-columns: minmax(0, 1fr) 56px !important; gap: 6px !important; }
+  .text-input { min-height: 36px !important; padding: 7px 9px !important; font-size: .84rem !important; border-radius: 9px !important; }
+  .send-btn { width: 56px !important; min-width: 56px !important; min-height: 36px !important; font-size: .82rem !important; border-radius: 9px !important; }
+}
+
+@media (max-width: 380px) {
+  .chat-area { height: calc(100svh - 52px) !important; min-height: calc(100svh - 52px) !important; }
+  .mobile-chief-complaint { max-height: 3.1em !important; overflow-y: auto !important; }
+}
+</style>
 </head>
 <body>
 <div class="app">
