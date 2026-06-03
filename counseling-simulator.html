@@ -633,6 +633,57 @@ table { width: 100%; border-collapse: collapse; }
   .mobile-chief-complaint { max-height: 3.1em !important; overflow-y: auto !important; }
 }
 </style>
+
+<style id="counseling-mobile-internal-scroll-20260603">
+/* Mobile correction: keep top case information and input visible; only the counseling dialogue scrolls internally. */
+@media (max-width: 768px) {
+  html, body {
+    height: 100svh !important;
+    min-height: 100svh !important;
+    overflow: hidden !important;
+  }
+  .app {
+    height: 100svh !important;
+    min-height: 100svh !important;
+    overflow: hidden !important;
+  }
+  .header {
+    position: static !important;
+    flex: 0 0 auto !important;
+  }
+  .main {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: auto !important;
+    overflow: hidden !important;
+  }
+  .chat-area {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+  }
+  .mobile-case-summary,
+  .chat-header,
+  .chat-input {
+    flex: 0 0 auto !important;
+  }
+  .chat-messages {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior: contain !important;
+  }
+  .chat-input {
+    position: relative !important;
+    bottom: auto !important;
+    z-index: 2 !important;
+  }
+}
+</style>
 </head>
 <body>
 <div class="app">
