@@ -70,6 +70,27 @@ textarea{height:120px;resize:vertical}
 @media(min-width:768px){
   .container{max-width:600px}
 }
+
+.reference-answer {
+  margin-top: 20px;
+  padding: 18px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #f0fdf4, #ecfeff);
+  border: 1px solid #86efac;
+  box-shadow: 0 10px 24px rgba(15, 118, 110, .08);
+}
+.reference-answer h3 { margin-bottom: 10px; color: #166534; }
+.reference-answer h4 { margin: 14px 0 8px; color: #0f766e; }
+.reference-answer p { margin: 7px 0; line-height: 1.75; color: var(--gray-700); }
+.reference-answer .reference-note {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.72);
+  color: var(--gray-600);
+  font-size: .92em;
+}
+
 </style>
 
 <style id="mobile-adaptation-20260603">
@@ -786,6 +807,59 @@ function goToPhase6() {
   updateSteps(5);
 }
 
+
+function extractSentences(text, patterns, maxCount = 2) {
+  if (!text) return '';
+  const sentences = text.split(/[。！？；]/).map(s => s.trim()).filter(Boolean);
+  const matched = [];
+  for (const sentence of sentences) {
+    if (patterns.some(pattern => sentence.includes(pattern)) && !matched.includes(sentence)) {
+      matched.push(sentence);
+    }
+    if (matched.length >= maxCount) break;
+  }
+  return matched.join('。') + (matched.length ? '。' : '');
+}
+
+function generateReferenceAnswer(data) {
+  const text = data.fullText || '';
+  const predisposing = extractSentences(text, ['从小', '父母', '母亲', '父亲', '家庭', '病史', '性格', '童年', '离婚', '家族', '智力'], 2) || '可从成长经历、家庭互动、人格特点、既往经历或生物易感性中寻找线索。';
+  const precipitating = extractSentences(text, ['最近', '之后', '后', '前', '开始', '第一次', '分手', '考试', '事故', '去世', '加班', '升学', '裁员'], 2) || '可寻找症状明显加重前的关键事件、压力源或关系变化。';
+  const perpetuating = extractSentences(text, ['回避', '不敢', '越来越', '每天', '反复', '控制不住', '喝', '独自', '逃避', '停不下来', '害怕', '担心'], 2) || '可从回避行为、负性认知、家庭反应、症状带来的次级影响中分析维持机制。';
+  const protective = extractSentences(text, ['关系很好', '支持', '愿意', '求助', '成绩优秀', '成绩好', '智力正常', '能力', '检查正常', '家人', '朋友'], 2) || '可关注仍然存在的关系资源、个人能力、求助动机、既往成功经验和可动员的支持系统。';
+  const firstSentence = `“${data.name}，谢谢你愿意把这些经历带到这里。我们可以先不急着给它下结论，先一起看看这段时间最困扰你的是什么，以及它是怎么一步步影响你的。”`;
+  return `
+    <div class="reference-answer" id="referenceAnswer">
+      <h3>📌 参考答案：不是唯一标准，重点看思路</h3>
+      <p><strong>参考诊断/问题方向：</strong>${data.diagnosis}</p>
+      <h4>一、两层阅读参考</h4>
+      <p><strong>第一层：</strong>仅看症状时，可以先形成初步假设，如“${data.category}相关问题”，但不能只凭症状贴标签。</p>
+      <p><strong>第二层：</strong>看完整背景后，要把症状放回具体生活处境中理解：这个人的问题与压力事件、关系经验、应对方式和可用资源相互作用。</p>
+      <h4>二、5P概念化参考</h4>
+      <p><strong>Presenting 当前问题：</strong>${data.symptoms}。可进一步写清楚主诉、核心症状与学习/工作/人际等功能损害。</p>
+      <p><strong>Predisposing 素质因素：</strong>${predisposing}</p>
+      <p><strong>Precipitating 诱发因素：</strong>${precipitating}</p>
+      <p><strong>Perpetuating 维持因素：</strong>${perpetuating}</p>
+      <p><strong>Protective 保护因素：</strong>${protective}</p>
+      <h4>三、治疗师第一句话参考</h4>
+      <p>${firstSentence}</p>
+      <div class="reference-note">提醒：参考答案不是让你照抄，而是帮助你检查自己的答案有没有做到“从症状走向机制，从诊断走向理解”。好的5P应当能解释：为什么是这个人、为什么是现在、为什么持续、从哪里开始帮助。</div>
+    </div>
+  `;
+}
+
+function showReferenceAnswer() {
+  if (!currentCase) return;
+  let box = document.getElementById('referenceAnswerContainer');
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'referenceAnswerContainer';
+    document.getElementById('phase6').appendChild(box);
+  }
+  box.innerHTML = generateReferenceAnswer(currentCase);
+  box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 async function submitAll() {
   const firstSentence = document.getElementById('firstSentence').value.trim();
   const reason = document.getElementById('reason').value.trim();
@@ -854,8 +928,11 @@ async function submitAll() {
   phase6.appendChild(jumpBtn);
   
   // 更新提交按钮状态
-  submitBtn.textContent = '✓ 已准备';
+  submitBtn.textContent = '✓ 已提交，可查看参考答案';
   submitBtn.style.background = 'var(--success)';
+  
+  // 提交后展示参考答案，帮助学生对照自己的概念化思路
+  showReferenceAnswer();
 }
 
 async function submitToFeishu(data) {
