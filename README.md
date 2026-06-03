@@ -12,3 +12,9 @@
 - W14个案概念化练习：`w14-case-conceptualization.html`
 
 注意：这些页面仅用于教学训练，不用于真实临床诊断。
+
+## 从 anti-procrastination-app 迁入（2026-06-03）
+
+- DSM-5速查手册（教材整理版）：`dsm5-textbook-version.html`
+- W16心理诊断侦探局（教师版）：`w16-diagnostic-detective-teacher.html`
+- W16心理诊断侦探局（学生版）：`w16-diagnostic-detective-student.html`
