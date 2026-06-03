@@ -284,6 +284,14 @@ table { width: 100%; border-collapse: collapse; }
 <!-- 第四步：活动二 - 5P填表 -->
 <div id="phase5" class="card hidden">
   <h2>📝 活动二：5P概念化</h2>
+
+  <div class="case-display case-summary-card">
+    <h3>当前案例信息</h3>
+    <p><strong id="phase5CaseTitle"></strong></p>
+    <p id="phase5CaseMeta"></p>
+    <p><strong>症状清单：</strong><span id="phase5CaseSymptoms"></span></p>
+    <p><strong>完整背景：</strong><span id="phase5CaseFullText"></span></p>
+  </div>
   
   <div class="case-display">
     <h3>5P模型框架</h3>
@@ -323,6 +331,14 @@ table { width: 100%; border-collapse: collapse; }
 <!-- 第五步：活动三 - 治疗师的第一句话 -->
 <div id="phase6" class="card hidden">
   <h2>💬 活动三：治疗师的第一句话</h2>
+
+  <div class="case-display case-summary-card">
+    <h3>当前案例信息</h3>
+    <p><strong id="phase6CaseTitle"></strong></p>
+    <p id="phase6CaseMeta"></p>
+    <p><strong>症状清单：</strong><span id="phase6CaseSymptoms"></span></p>
+    <p><strong>完整背景：</strong><span id="phase6CaseFullText"></span></p>
+  </div>
   
   <div class="case-display">
     <h3>场景设定</h3>
@@ -702,6 +718,24 @@ function drawCase() {
   document.getElementById('drawBtn').textContent = '✓ 已抽取';
 }
 
+
+function updateCaseSummaryCards() {
+  if (!currentCase) return;
+  const title = `案例${currentCase.id}：${currentCase.name}`;
+  const meta = `${currentCase.age}｜${currentCase.category} · ${currentCase.severity}`;
+  const targets = ['phase5', 'phase6'];
+  targets.forEach(prefix => {
+    const titleEl = document.getElementById(prefix + 'CaseTitle');
+    const metaEl = document.getElementById(prefix + 'CaseMeta');
+    const symptomsEl = document.getElementById(prefix + 'CaseSymptoms');
+    const fullTextEl = document.getElementById(prefix + 'CaseFullText');
+    if (titleEl) titleEl.textContent = title;
+    if (metaEl) metaEl.textContent = meta;
+    if (symptomsEl) symptomsEl.textContent = currentCase.symptoms;
+    if (fullTextEl) fullTextEl.textContent = currentCase.fullText;
+  });
+}
+
 function goToPhase3() {
   document.getElementById('phase2').classList.add('hidden');
   document.getElementById('phase3').classList.remove('hidden');
@@ -726,6 +760,7 @@ function goToPhase4() {
   
   document.getElementById('phase3').classList.add('hidden');
   document.getElementById('phase5').classList.remove('hidden');
+  updateCaseSummaryCards();
   updateSteps(4);
 }
 
@@ -746,6 +781,7 @@ function goToPhase6() {
   
   // 填充案例名称
   document.getElementById('caseName2').textContent = currentCase.name;
+  updateCaseSummaryCards();
   
   updateSteps(5);
 }
