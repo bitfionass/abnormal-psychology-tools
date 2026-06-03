@@ -86,7 +86,6 @@ textarea{height:120px;resize:vertical}
   <div class="step" id="step3">3. 活动一</div>
   <div class="step" id="step4">4. 活动二</div>
   <div class="step" id="step5">5. 活动三</div>
-  <div class="step" id="step6">6. 活动四</div>
 </div>
 
 <!-- 第一步：学生登录 -->
@@ -106,7 +105,7 @@ textarea{height:120px;resize:vertical}
 <!-- 第二步：随机抽取案例 -->
 <div id="phase2" class="card hidden">
   <h2>🎲 随机抽取案例</h2>
-  <p style="margin-bottom:16px;color:var(--gray-600);font-size:0.9em">点击按钮随机抽取一个案例，完成后续四个活动。</p>
+  <p style="margin-bottom:16px;color:var(--gray-600);font-size:0.9em">点击按钮随机抽取一个案例，完成后续三个活动。</p>
   <button class="btn btn-primary" id="drawBtn" onclick="drawCase()">🎲 抽取案例</button>
   
   <div id="caseDisplay" class="case-display hidden">
@@ -143,31 +142,12 @@ textarea{height:120px;resize:vertical}
     <textarea id="secondImpression" placeholder="对比两次阅读，你的理解有什么不同？"></textarea>
   </div>
   
-  <button class="btn btn-primary" onclick="goToPhase4()">下一步：活动二 →</button>
+  <button class="btn btn-primary" onclick="goToPhase4()">下一步：活动二（5P概念化） →</button>
 </div>
 
-<!-- 第四步：活动二 - 翻译练习 -->
-<div id="phase4" class="card hidden">
-  <h2>✍️ 活动二：翻译练习</h2>
-  
-  <div class="case-display">
-    <h3>任务说明</h3>
-    <p>请把诊断标签翻译成一个人的故事。</p>
-    <p style="margin-top:8px"><strong>诊断标签：</strong><span id="diagnosisLabel"></span></p>
-  </div>
-  
-  <div class="form-group">
-    <label class="form-label">把这个诊断翻译成一个"人的故事"</label>
-    <textarea id="translation" placeholder="用你自己的话，描述这个人是怎么走到今天的..."></textarea>
-    <div class="hint">200字左右，重点是"这个人经历了什么"</div>
-  </div>
-  
-  <button class="btn btn-primary" onclick="goToPhase5()">下一步：活动三 →</button>
-</div>
-
-<!-- 第五步：活动三 - 5P填表 -->
+<!-- 第四步：活动二 - 5P填表 -->
 <div id="phase5" class="card hidden">
-  <h2>📝 活动三：5P概念化</h2>
+  <h2>📝 活动二：5P概念化</h2>
   
   <div class="case-display">
     <h3>5P模型框架</h3>
@@ -201,12 +181,12 @@ textarea{height:120px;resize:vertical}
     </div>
   </div>
   
-  <button class="btn btn-primary" onclick="goToPhase6()">下一步：活动四 →</button>
+  <button class="btn btn-primary" onclick="goToPhase6()">下一步：活动三 →</button>
 </div>
 
-<!-- 第六步：活动四 - 治疗师的第一句话 -->
+<!-- 第五步：活动三 - 治疗师的第一句话 -->
 <div id="phase6" class="card hidden">
-  <h2>💬 活动四：治疗师的第一句话</h2>
+  <h2>💬 活动三：治疗师的第一句话</h2>
   
   <div class="case-display">
     <h3>场景设定</h3>
@@ -550,8 +530,9 @@ let studentId = '';
 
 // 步骤更新
 function updateSteps(current) {
-  for (let i = 1; i <= 6; i++) {
+  for (let i = 1; i <= 5; i++) {
     const step = document.getElementById('step' + i);
+    if (!step) continue;
     step.className = 'step' + (i < current ? ' completed' : '') + (i === current ? ' active' : '');
   }
 }
@@ -608,25 +589,8 @@ function goToPhase4() {
   }
   
   document.getElementById('phase3').classList.add('hidden');
-  document.getElementById('phase4').classList.remove('hidden');
-  
-  // 填充诊断标签
-  document.getElementById('diagnosisLabel').textContent = currentCase.diagnosis;
-  
-  updateSteps(4);
-}
-
-function goToPhase5() {
-  const translation = document.getElementById('translation').value.trim();
-  
-  if (!translation) {
-    alert('请完成翻译练习');
-    return;
-  }
-  
-  document.getElementById('phase4').classList.add('hidden');
   document.getElementById('phase5').classList.remove('hidden');
-  updateSteps(5);
+  updateSteps(4);
 }
 
 function goToPhase6() {
@@ -647,7 +611,7 @@ function goToPhase6() {
   // 填充案例名称
   document.getElementById('caseName2').textContent = currentCase.name;
   
-  updateSteps(6);
+  updateSteps(5);
 }
 
 async function submitAll() {
@@ -655,7 +619,7 @@ async function submitAll() {
   const reason = document.getElementById('reason').value.trim();
   
   if (!firstSentence || !reason) {
-    alert('请完成活动四的所有问题');
+    alert('请完成活动三的所有问题');
     return;
   }
   
@@ -673,7 +637,6 @@ async function submitAll() {
     diagnosis: currentCase.diagnosis,
     firstImpression: document.getElementById('firstImpression').value.trim(),
     secondImpression: document.getElementById('secondImpression').value.trim(),
-    translation: document.getElementById('translation').value.trim(),
     p1: document.getElementById('p1').value.trim(),
     p2: document.getElementById('p2').value.trim(),
     p3: document.getElementById('p3').value.trim(),
@@ -737,7 +700,6 @@ async function submitToFeishu(data) {
     '诊断': data.diagnosis,
     '第一印象': data.firstImpression,
     '理解变化': data.secondImpression,
-    '翻译练习': data.translation,
     'Presenting': data.p1,
     'Predisposing': data.p2,
     'Precipitating': data.p3,
