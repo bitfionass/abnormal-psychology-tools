@@ -497,6 +497,83 @@ table { width: 100%; border-collapse: collapse; }
 }
 </style>
 
+<style id="counseling-mobile-summary-20260603">
+  .mobile-case-summary {
+    display: none;
+  }
+  @media (max-width: 768px) {
+    .mobile-case-summary {
+      display: block !important;
+      background: #fff !important;
+      border: 1px solid var(--gray-200) !important;
+      border-radius: 16px !important;
+      padding: 12px !important;
+      margin-bottom: 12px !important;
+      box-shadow: 0 8px 24px rgba(15,23,42,.06) !important;
+    }
+    .mobile-case-top {
+      display: grid !important;
+      grid-template-columns: 1fr !important;
+      gap: 8px !important;
+      margin-bottom: 10px !important;
+    }
+    .mobile-case-title {
+      font-weight: 800 !important;
+      color: var(--gray-900) !important;
+      font-size: 1.02rem !important;
+      line-height: 1.35 !important;
+    }
+    .mobile-case-selector {
+      width: 100% !important;
+      min-height: 44px !important;
+      border: 2px solid var(--gray-200) !important;
+      border-radius: 12px !important;
+      padding: 8px 10px !important;
+      background: white !important;
+    }
+    .mobile-chief-complaint {
+      background: linear-gradient(135deg,#fef3c7,#fde68a) !important;
+      border-left: 4px solid var(--warning) !important;
+      border-radius: 12px !important;
+      padding: 10px !important;
+      color: var(--gray-800) !important;
+      line-height: 1.65 !important;
+      margin-bottom: 10px !important;
+    }
+    .mobile-progress-row {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 8px !important;
+      margin-bottom: 10px !important;
+    }
+    .mobile-pill {
+      background: var(--gray-50) !important;
+      border: 1px solid var(--gray-200) !important;
+      border-radius: 12px !important;
+      padding: 8px !important;
+      font-size: .92rem !important;
+      color: var(--gray-600) !important;
+    }
+    .mobile-pill strong { color: var(--gray-900) !important; }
+    .mobile-action-row {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 8px !important;
+    }
+    .mobile-action-row .btn {
+      width: 100% !important;
+      margin: 0 !important;
+      min-height: 44px !important;
+    }
+    .sidebar {
+      display: none !important;
+    }
+    .chat-area {
+      min-height: 80dvh !important;
+      height: 80dvh !important;
+    }
+  }
+</style>
 </head>
 <body>
 <div class="app">
@@ -529,6 +606,28 @@ table { width: 100%; border-collapse: collapse; }
 
   <!-- 中间：对话区域 -->
   <div class="chat-area">
+
+    <div class="mobile-case-summary" id="mobileCaseSummary">
+      <div class="mobile-case-top">
+        <div class="mobile-case-title" id="mobileCaseTitle">来访者信息</div>
+        <select class="mobile-case-selector" id="mobileCaseSelector" aria-label="选择案例">
+          <option value="case1">案例1：小雨（高三学生）</option>
+          <option value="case2">案例2：李队长（消防队长）</option>
+          <option value="case3">案例3：小陈（大学生）</option>
+          <option value="case4">案例4：阿美（大学生）</option>
+          <option value="case5">案例5：小宇（初中生）</option>
+        </select>
+      </div>
+      <div class="mobile-chief-complaint" id="mobileChiefComplaint"></div>
+      <div class="mobile-progress-row">
+        <div class="mobile-pill">提问数：<strong id="mobileQuestionCount">0</strong></div>
+        <div class="mobile-pill">收集信息：<strong id="mobileInfoCollected">0/0</strong></div>
+      </div>
+      <div class="mobile-action-row">
+        <button class="btn btn-outline" onclick="showDiagnosis()">📋 提交诊断</button>
+        <button class="btn btn-primary" onclick="endConsultation()">结束咨询</button>
+      </div>
+    </div>
     <div class="chat-header">
       <span class="chat-title">💬 咨询对话</span>
       <span class="status-badge status-active" id="statusBadge">进行中</span>
@@ -830,11 +929,15 @@ function startTraining() {
 // 初始化
 function init() {
   loadCase(currentCase);
-  document.getElementById('caseSelector').addEventListener('change', function() {
-    currentCase = this.value;
+  const desktopSelector = document.getElementById('caseSelector');
+  const mobileSelector = document.getElementById('mobileCaseSelector');
+  function handleCaseChange(value) {
+    currentCase = value;
     currentData = cases[currentCase];
     loadCase(currentCase);
-  });
+  }
+  desktopSelector.addEventListener('change', function() { handleCaseChange(this.value); });
+  mobileSelector.addEventListener('change', function() { handleCaseChange(this.value); });
 }
 
 // 加载案例
@@ -846,6 +949,12 @@ function loadCase(caseId) {
   isConsultationActive = true;
   document.getElementById('statusBadge').className = 'status-badge status-active';
   document.getElementById('statusBadge').textContent = '进行中';
+  document.getElementById('caseSelector').value = caseId;
+  document.getElementById('mobileCaseSelector').value = caseId;
+  document.getElementById('mobileCaseTitle').textContent = `${data.name}｜${data.info.gender} · ${data.info.age} · ${data.info.occupation}`;
+  document.getElementById('mobileChiefComplaint').textContent = data.complaint;
+  document.getElementById('mobileQuestionCount').textContent = '0';
+  document.getElementById('mobileInfoCollected').textContent = `0/${Object.keys(data.keywords).length}`;
   
   // 显示来访者信息
   const infoHtml = `
@@ -904,6 +1013,7 @@ function sendMessage() {
   
   questionCount++;
   document.getElementById('questionCount').textContent = questionCount;
+  document.getElementById('mobileQuestionCount').textContent = questionCount;
   
   // 添加用户消息
   addMessage(message, 'user');
@@ -964,6 +1074,7 @@ function updateProgress() {
   const total = Object.keys(currentData.keywords).length;
   const collected = collectedInfo.size;
   document.getElementById('infoCollected').textContent = `${collected}/${total}`;
+  document.getElementById('mobileInfoCollected').textContent = `${collected}/${total}`;
 }
 
 // 结束咨询
