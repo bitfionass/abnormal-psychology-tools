@@ -7,6 +7,142 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}:root{--bg:#f5f7fb;--card:#fff;--ink:#172033;--muted:#64748b;--line:#e2e8f0;--blue:#2563eb;--blue2:#1d4ed8;--teal:#0f766e;--amber:#f59e0b;--red:#dc2626;--shadow:0 10px 30px rgba(15,23,42,.08);--radius:18px}html{font-size:15px}body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(180deg,#eef5ff 0%,#f8fafc 42%,#fff 100%);color:var(--ink);line-height:1.7;min-height:100vh}.hero{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:1px solid rgba(226,232,240,.9)}.hero-inner{max-width:1180px;margin:0 auto;padding:18px 18px 14px}.kicker{font-size:12px;color:var(--blue2);font-weight:900;letter-spacing:.12em}h1{font-size:clamp(24px,4vw,40px);line-height:1.18;margin:4px 0;font-weight:900}.sub{color:var(--muted);font-size:14px}.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.stat{background:#eff6ff;border:1px solid #bfdbfe;border-radius:999px;padding:6px 12px;color:#1e40af;font-weight:800;font-size:13px}.toolbar{max-width:1180px;margin:0 auto;padding:14px 18px 8px}.search{width:100%;padding:14px 16px;border:2px solid var(--line);border-radius:16px;font-size:16px;background:#fff;outline:none;box-shadow:0 4px 16px rgba(15,23,42,.04)}.search:focus{border-color:var(--blue)}.filters{display:flex;gap:8px;overflow-x:auto;padding:12px 0 4px;-webkit-overflow-scrolling:touch}.filter{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 13px;font-size:13px;font-weight:800;color:#475569;cursor:pointer}.filter.active{background:linear-gradient(135deg,var(--blue),var(--teal));color:#fff;border-color:transparent}.wrap{max-width:1180px;margin:0 auto;padding:10px 18px 90px}.count-line{color:var(--muted);font-size:14px;margin:8px 2px 14px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:16px}.case-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;transition:.2s;display:flex;flex-direction:column}.case-card:hover{transform:translateY(-2px);box-shadow:0 16px 36px rgba(15,23,42,.12)}.case-head{padding:16px 17px 13px;background:linear-gradient(135deg,#f8fbff,#ffffff);border-bottom:1px solid var(--line);cursor:pointer}.meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px}.id{font-size:12px;font-weight:900;color:var(--blue2);letter-spacing:.08em}.cat{font-size:12px;font-weight:800;color:#0f766e;background:#ccfbf1;border-radius:999px;padding:3px 9px}.person{font-size:18px;font-weight:900;line-height:1.35;margin-bottom:7px}.diag{display:inline-block;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:999px;padding:3px 9px;font-size:12px;font-weight:800}.case-body{padding:15px 17px 17px;display:none}.case-card.open .case-body{display:block}.section{margin-bottom:12px}.section h3{font-size:13px;color:#334155;margin-bottom:4px;display:flex;align-items:center;gap:5px}.section p{font-size:14px;color:#334155}.complaint{background:#fffbeb;border-left:4px solid var(--amber);border-radius:12px;padding:10px 12px;color:#78350f}.analysis{background:#f0f9ff;border-left:4px solid var(--blue);border-radius:12px;padding:10px 12px}.diff{background:#f8fafc;border:1px dashed #cbd5e1;border-radius:12px;padding:10px 12px}.story{background:#f8fbff;border-left:4px solid var(--teal);border-radius:12px;padding:12px 13px;white-space:pre-line}.fivep{background:#f7fee7;border-left:4px solid #65a30d;border-radius:12px;padding:12px 13px;white-space:pre-line}.q-list{padding-left:20px;color:#334155;font-size:14px}.q-list li{margin:3px 0}.bottom{position:fixed;right:18px;bottom:18px;display:flex;gap:8px;z-index:30}.float{border:none;border-radius:999px;background:#0f172a;color:white;padding:11px 14px;font-weight:800;box-shadow:0 10px 28px rgba(15,23,42,.2);cursor:pointer}.empty{display:none;text-align:center;color:var(--muted);padding:40px 10px}@media(max-width:720px){.hero-inner{padding:14px 14px 10px}.toolbar{padding:10px 14px 6px}.wrap{padding:8px 14px 86px}.grid{grid-template-columns:1fr;gap:12px}.case-head{padding:15px}.case-body{padding:14px 15px}.bottom{left:14px;right:14px;justify-content:center}.float{flex:1}}
 </style>
+
+<style id="mobile-adaptation-20260603">
+/* Mobile adaptation patch: keep all tools readable and usable on student phones. */
+* { -webkit-tap-highlight-color: rgba(37, 99, 235, .12); }
+html { scroll-behavior: smooth; }
+body { overflow-x: hidden; }
+img, svg, canvas, video { max-width: 100%; height: auto; }
+table { width: 100%; border-collapse: collapse; }
+
+@media (max-width: 900px) {
+  html { font-size: 16px; }
+  body {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+
+  .container, .wrapper, .wrap, .page, main, .main, .content, .app, .app-container,
+  .layout, .main-layout, .workspace, .dashboard, .tool-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    padding-left: max(14px, env(safe-area-inset-left)) !important;
+    padding-right: max(14px, env(safe-area-inset-right)) !important;
+    box-sizing: border-box !important;
+  }
+
+  header, .header, .hero {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 0 14px 0 !important;
+    padding: 22px 16px !important;
+    border-radius: 0 0 20px 20px !important;
+    box-sizing: border-box !important;
+  }
+
+  h1 { font-size: clamp(1.45rem, 7vw, 2rem) !important; line-height: 1.25 !important; }
+  h2 { font-size: clamp(1.2rem, 5.8vw, 1.55rem) !important; line-height: 1.3 !important; }
+  h3 { font-size: clamp(1.05rem, 4.8vw, 1.25rem) !important; line-height: 1.35 !important; }
+  p, li, label, input, textarea, select, button { font-size: 1rem !important; line-height: 1.65 !important; }
+
+  .grid, .cards, .card-grid, .case-grid, .stats, .stat-grid, .five-p-grid,
+  .info-grid, .tool-grid, .diagnosis-grid, .chapter-grid, .resource-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .card, .case-card, .tool-card, .section, .panel, .box, .note, .case-display,
+  .diagnosis-card, .chapter-card, .student-card, .teacher-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 16px !important;
+    border-radius: 16px !important;
+    box-sizing: border-box !important;
+  }
+
+  .filters, .filter-bar, .tabs, .nav-tabs, .category-tabs, .toolbar, .actions,
+  .button-group, .controls {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    gap: 8px !important;
+    padding-bottom: 8px !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .filters > *, .filter-bar > *, .tabs > *, .nav-tabs > *, .category-tabs > *,
+  .toolbar > *, .actions > *, .button-group > *, .controls > * {
+    flex: 0 0 auto !important;
+  }
+
+  input, textarea, select {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 44px !important;
+    box-sizing: border-box !important;
+  }
+  textarea { min-height: 120px !important; }
+  button, .btn, .button, a.card, .open {
+    min-height: 44px !important;
+    touch-action: manipulation !important;
+  }
+
+  .sidebar, .left-sidebar, .right-sidebar, .side-panel, .client-panel,
+  .diagnosis-panel, .info-panel, .left-panel, .right-panel, aside {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    transform: none !important;
+  }
+
+  .chat-area, .conversation, .messages, .dialogue, .main-panel, .center-panel {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 55vh !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .table-wrap, .table-container, .overflow-table {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .floating, .float, .back-to-top, .bottom-nav, .sticky-actions {
+    max-width: calc(100vw - 24px) !important;
+    left: 12px !important;
+    right: 12px !important;
+    bottom: max(12px, env(safe-area-inset-bottom)) !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .container, .wrapper, .wrap, main, .main, .content, .app, .app-container {
+    padding-left: max(10px, env(safe-area-inset-left)) !important;
+    padding-right: max(10px, env(safe-area-inset-right)) !important;
+  }
+  .card, .case-card, .tool-card, .section, .panel, .box, .note, .case-display {
+    padding: 14px !important;
+  }
+  .btn, button { width: 100% !important; justify-content: center !important; }
+  .btn + .btn, button + button { margin-top: 8px !important; }
+}
+</style>
+
 </head>
 <body>
 <header class="hero"><div class="hero-inner"><div class="kicker">ABNORMAL PSYCHOLOGY CASE LIBRARY</div><h1>变态心理学案例库</h1><div class="sub">60个虚构课堂案例 · 已扩展为情境化长案例 · 覆盖17类常见诊断主题 · 用于症状识别、鉴别诊断与5P概念化训练</div><div class="stats"><span class="stat">60个案例</span><span class="stat">17个类别</span><span class="stat">点击卡片展开</span></div></div></header>
