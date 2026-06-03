@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>案例随机分配工具</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#4f46e5;--primary-dark:#3730a3;--success:#10b981;--gray-50:#f8fafc;--gray-100:#f1f5f9;--gray-200:#e2e8f0;--gray-300:#cbd5e1;--gray-600:#475569;--gray-800:#1e293b}
+html{font-size:16px}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--gray-100);color:var(--gray-800);min-height:100vh;padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+
+.container{max-width:100%;margin:0 auto}
+
+/* 头部 */
+header{text-align:center;margin-bottom:20px;padding:24px 16px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white;border-radius:16px}
+header h1{font-size:1.5em;margin-bottom:6px}
+header p{font-size:0.9em;opacity:0.9}
+
+/* 卡片 */
+.card{background:white;border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,0.06)}
+.card h2{font-size:1.05em;color:var(--gray-800);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+
+/* 表单 */
+.form-group{margin-bottom:14px}
+.form-label{display:block;font-size:0.85em;font-weight:600;color:var(--gray-600);margin-bottom:8px}
+textarea{width:100%;height:180px;padding:14px;border:2px solid var(--gray-200);border-radius:12px;font-size:16px;resize:vertical;outline:none;transition:border-color 0.2s;-webkit-appearance:none}
+textarea:focus{border-color:var(--primary)}
+
+/* 按钮 */
+.btn{padding:14px 20px;border-radius:12px;font-size:1em;font-weight:600;cursor:pointer;border:none;transition:all 0.2s;-webkit-appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary{background:var(--primary);color:white}
+.btn-primary:hover,.btn-primary:active{background:var(--primary-dark)}
+.btn-success{background:var(--success);color:white}
+.btn-success:hover,.btn-success:active{background:#059669}
+.btn-outline{background:white;color:var(--primary);border:2px solid var(--primary)}
+.btn-outline:hover,.btn-outline:active{background:var(--gray-50)}
+.btn-group{display:flex;gap:10px;margin-top:16px}
+.btn-group .btn{flex:1}
+
+/* 结果 */
+.result-area{display:none}
+.result-area.active{display:block}
+
+.success-msg{background:#d1fae5;color:#065f46;padding:14px;border-radius:10px;margin-bottom:16px;font-size:0.95em}
+.error-msg{background:#fee2e2;color:#dc2626;padding:14px;border-radius:10px;margin-bottom:16px;font-size:0.95em}
+
+/* 统计 */
+.stats-bar{display:flex;justify-content:space-around;margin:16px 0;padding:14px;background:var(--gray-50);border-radius:12px}
+.stat{text-align:center}
+.stat-number{font-size:1.6em;font-weight:700;color:var(--primary)}
+.stat-label{font-size:0.75em;color:var(--gray-600);margin-top:2px}
+
+/* 操作按钮 */
+.action-bar{display:flex;gap:10px;margin:16px 0}
+.action-bar .btn{flex:1;padding:12px 16px;font-size:0.9em}
+
+/* 结果卡片（移动端用卡片代替表格） */
+.result-card{background:var(--gray-50);border-radius:12px;padding:14px;margin-bottom:10px;border-left:4px solid var(--primary)}
+.result-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.result-student{font-size:1.05em;font-weight:600;color:var(--gray-800)}
+.result-index{font-size:0.8em;color:var(--gray-500);background:white;padding:2px 10px;border-radius:20px}
+.result-case{font-size:0.95em;color:var(--primary);font-weight:500;margin-bottom:4px}
+.result-type{font-size:0.85em;color:var(--gray-600)}
+
+/* 展开/折叠 */
+.collapse-btn{width:100%;padding:12px;background:var(--gray-50);border:2px dashed var(--gray-300);border-radius:12px;font-size:0.9em;color:var(--gray-600);cursor:pointer;text-align:center;margin-top:12px}
+.collapse-btn:active{background:var(--gray-100)}
+.result-list{max-height:400px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.result-list.collapsed{max-height:0;overflow:hidden}
+
+/* 输入提示 */
+.input-hint{font-size:0.8em;color:var(--gray-500);margin-top:8px;line-height:1.5}
+
+/* 快捷输入 */
+.quick-input{display:flex;gap:8px;margin-top:12px}
+.quick-input input{flex:1;padding:10px 14px;border:2px solid var(--gray-200);border-radius:10px;font-size:16px;outline:none}
+.quick-input input:focus{border-color:var(--primary)}
+.quick-input .btn{padding:10px 16px;font-size:0.9em;white-space:nowrap}
+
+/* 分隔线 */
+.divider{height:1px;background:var(--gray-200);margin:16px 0}
+
+@media(min-width:768px){
+  .container{max-width:600px}
+  .result-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-height:none}
+  .result-card{margin-bottom:0}
+}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <h1>📋 案例随机分配</h1>
+  <p>输入学生名单，随机分配60个案例</p>
+</header>
+
+<div class="card">
+  <h2>👥 输入学生名单</h2>
+  <div class="form-group">
+    <label class="form-label">学生姓名（每行一个）</label>
+    <textarea id="studentList" placeholder="请输入学生姓名，每行一个：&#10;&#10;张三&#10;李四&#10;王五&#10;赵六&#10;..."></textarea>
+    <div class="input-hint">💡 也支持逗号、空格分隔</div>
+  </div>
+  
+  <div class="divider"></div>
+  
+  <div class="form-group">
+    <label class="form-label">快速添加单个学生</label>
+    <div class="quick-input">
+      <input type="text" id="quickName" placeholder="输入姓名后点击添加" onkeypress="if(event.key==='Enter')addStudent()">
+      <button class="btn btn-outline" onclick="addStudent()">+ 添加</button>
+    </div>
+  </div>
+  
+  <div class="btn-group">
+    <button class="btn btn-primary" onclick="randomAssign()">🎲 随机分配</button>
+    <button class="btn btn-outline" onclick="clearAll()">🗑️ 清空</button>
+  </div>
+</div>
+
+<div class="result-area" id="resultArea">
+  <div class="card">
+    <h2>📊 分配结果</h2>
+    <div id="successMsg" class="success-msg" style="display:none"></div>
+    <div id="errorMsg" class="error-msg" style="display:none"></div>
+    
+    <div class="stats-bar">
+      <div class="stat">
+        <div class="stat-number" id="studentCount">0</div>
+        <div class="stat-label">学生人数</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">60</div>
+        <div class="stat-label">可用案例</div>
+      </div>
+    </div>
+    
+    <div class="action-bar">
+      <button class="btn btn-outline" onclick="copyToClipboard()">📋 复制</button>
+      <button class="btn btn-success" onclick="exportCSV()">📥 导出CSV</button>
+    </div>
+    
+    <button class="collapse-btn" id="collapseBtn" onclick="toggleList()">点击展开结果列表 ▼</button>
+    
+    <div class="result-list collapsed" id="resultList">
+      <!-- 动态填充 -->
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const cases = [
+  {id:1,name:"小雨",type:"重性抑郁障碍"},{id:2,name:"李队长",type:"创伤后应激障碍"},{id:3,name:"小陈",type:"社交焦虑障碍"},
+  {id:4,name:"阿美",type:"边缘型人格障碍"},{id:5,name:"小宇",type:"强迫症"},{id:6,name:"天天",type:"注意缺陷/多动障碍"},
+  {id:7,name:"张女士",type:"惊恐障碍"},{id:8,name:"小艺",type:"神经性厌食"},{id:9,name:"老张",type:"老年抑郁障碍"},
+  {id:10,name:"小林",type:"广泛性焦虑障碍"},{id:11,name:"王女士",type:"囤积障碍"},{id:12,name:"小杨",type:"精神分裂症"},
+  {id:13,name:"刘女士",type:"分离性身份障碍"},{id:14,name:"赵先生",type:"反社会型人格障碍"},{id:15,name:"陈奶奶",type:"神经认知障碍"},
+  {id:16,name:"小美",type:"特定恐怖症"},{id:17,name:"周女士",type:"暴食障碍"},{id:18,name:"孙先生",type:"失眠障碍"},
+  {id:19,name:"吴小姐",type:"表演型人格障碍"},{id:20,name:"郑先生",type:"自闭症谱系障碍"},{id:21,name:"小周",type:"持续性抑郁障碍"},
+  {id:22,name:"林女士",type:"广场恐怖症"},{id:23,name:"小月",type:"选择性缄默症"},{id:24,name:"小刘",type:"躯体变形障碍"},
+  {id:25,name:"小张",type:"拔毛癖"},{id:26,name:"小李",type:"急性应激障碍"},{id:27,name:"老王",type:"适应障碍"},
+  {id:28,name:"阿珍",type:"分离性身份障碍"},{id:29,name:"陈女士",type:"躯体症状障碍"},{id:30,name:"小杨2",type:"神经性贪食"},
+  {id:31,name:"小赵",type:"嗜睡障碍"},{id:32,name:"刘先生",type:"延迟射精"},{id:33,name:"小明",type:"对立违抗障碍"},
+  {id:34,name:"老陈",type:"间歇性暴怒障碍"},{id:35,name:"老周",type:"酒精使用障碍"},{id:36,name:"小吴",type:"赌博障碍"},
+  {id:37,name:"老李",type:"偏执型人格障碍"},{id:38,name:"张总",type:"自恋型人格障碍"},{id:39,name:"小何",type:"梦魇障碍"},
+  {id:40,name:"阿强",type:"品行障碍"},{id:41,name:"小杰",type:"性别烦躁"},{id:42,name:"小芳",type:"转换障碍"},
+  {id:43,name:"小林2",type:"人格解体/现实解体障碍"},{id:44,name:"马先生",type:"强迫型人格障碍"},{id:45,name:"老孙",type:"谵妄"},
+  {id:46,name:"李奶奶",type:"重度神经认知障碍"},{id:47,name:"某男",type:"窥阴障碍"},{id:48,name:"赵女士",type:"疾病焦虑障碍"},
+  {id:49,name:"小宝",type:"遗尿症"},{id:50,name:"老黄",type:"烟草戒断"},{id:51,name:"小孙",type:"双相I型障碍"},
+  {id:52,name:"小林3",type:"社交焦虑障碍（表演限定型）"},{id:53,name:"王阿姨",type:"广泛性焦虑障碍"},{id:54,name:"老周2",type:"分离性遗忘症"},
+  {id:55,name:"小陈2",type:"大麻使用障碍"},{id:56,name:"陈先生",type:"成人ADHD"},{id:57,name:"小李2",type:"强迫症（对称型）"},
+  {id:58,name:"阿杰",type:"表演型人格障碍"},{id:59,name:"刘女士2",type:"特定恐怖症（飞行）"},{id:60,name:"小方",type:"纵火狂"}
+];
+
+let currentResults = [];
+let isListCollapsed = true;
+
+function addStudent() {
+  const input = document.getElementById('quickName');
+  const name = input.value.trim();
+  if (!name) return;
+  
+  const textarea = document.getElementById('studentList');
+  const current = textarea.value.trim();
+  textarea.value = current ? current + '\n' + name : name;
+  input.value = '';
+  input.focus();
+}
+
+function parseStudents() {
+  const input = document.getElementById('studentList').value.trim();
+  if (!input) return [];
+  
+  let students = [];
+  if (input.includes('\n')) {
+    students = input.split('\n').map(s => s.trim()).filter(s => s);
+  } else if (input.includes(',') || input.includes('，')) {
+    students = input.split(/[,，]/).map(s => s.trim()).filter(s => s);
+  } else if (input.includes(' ')) {
+    students = input.split(/\s+/).map(s => s.trim()).filter(s => s);
+  } else {
+    students = [input];
+  }
+  
+  return [...new Set(students)]; // 去重
+}
+
+function shuffle(array) {
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+  return newArray;
+}
+
+function randomAssign() {
+  const students = parseStudents();
+  
+  if (students.length === 0) {
+    showError('请输入学生名单');
+    return;
+  }
+  
+  if (students.length > 60) {
+    showError('学生人数(' + students.length + '人)超过60人，请减少学生数量');
+    return;
+  }
+  
+  const shuffledCases = shuffle(cases);
+  currentResults = students.map((student, index) => ({
+    student: student,
+    caseId: shuffledCases[index].id,
+    caseName: shuffledCases[index].name,
+    caseType: shuffledCases[index].type
+  }));
+  
+  showResults();
+}
+
+function showResults() {
+  const resultArea = document.getElementById('resultArea');
+  resultArea.classList.add('active');
+  
+  document.getElementById('successMsg').style.display = 'block';
+  document.getElementById('errorMsg').style.display = 'none';
+  document.getElementById('successMsg').textContent = '✓ 分配成功！共 ' + currentResults.length + ' 名学生';
+  document.getElementById('studentCount').textContent = currentResults.length;
+  
+  const resultList = document.getElementById('resultList');
+  resultList.innerHTML = currentResults.map((r, i) => 
+    '<div class="result-card">' +
+      '<div class="result-header">' +
+        '<span class="result-student">' + r.student + '</span>' +
+        '<span class="result-index">#' + (i + 1) + '</span>' +
+      '</div>' +
+      '<div class="result-case">案例' + r.caseId + '：' + r.caseName + '</div>' +
+      '<div class="result-type">' + r.caseType + '</div>' +
+    '</div>'
+  ).join('');
+  
+  // 滚动到结果区域
+  resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function showError(msg) {
+  const resultArea = document.getElementById('resultArea');
+  resultArea.classList.add('active');
+  
+  document.getElementById('successMsg').style.display = 'none';
+  document.getElementById('errorMsg').style.display = 'block';
+  document.getElementById('errorMsg').textContent = '✗ ' + msg;
+  document.getElementById('resultList').innerHTML = '';
+}
+
+function toggleList() {
+  const list = document.getElementById('resultList');
+  const btn = document.getElementById('collapseBtn');
+  isListCollapsed = !isListCollapsed;
+  
+  if (isListCollapsed) {
+    list.classList.add('collapsed');
+    btn.textContent = '点击展开结果列表 ▼';
+  } else {
+    list.classList.remove('collapsed');
+    btn.textContent = '点击收起结果列表 ▲';
+  }
+}
+
+function clearAll() {
+  document.getElementById('studentList').value = '';
+  document.getElementById('resultArea').classList.remove('active');
+  currentResults = [];
+  isListCollapsed = true;
+}
+
+function copyToClipboard() {
+  if (currentResults.length === 0) return;
+  
+  const text = '案例分配结果\n' + '='.repeat(30) + '\n' + 
+    currentResults.map((r, i) => (i+1) + '. ' + r.student + ' → 案例' + r.caseId + '：' + r.caseName + '（' + r.caseType + '）').join('\n');
+  
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('已复制到剪贴板！');
+    }).catch(() => {
+      fallbackCopy(text);
+    });
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.style.position = 'fixed';
+  textarea.style.opacity = '0';
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand('copy');
+  document.body.removeChild(textarea);
+  showToast('已复制到剪贴板！');
+}
+
+function showToast(msg) {
+  const toast = document.createElement('div');
+  toast.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#333;color:white;padding:12px 24px;border-radius:8px;font-size:0.9em;z-index:1000';
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => {
+    document.body.removeChild(toast);
+  }, 2000);
+}
+
+function exportCSV() {
+  if (currentResults.length === 0) return;
+  
+  const BOM = '\uFEFF';
+  const csv = BOM + '序号,学生姓名,案例编号,来访者姓名,障碍类型\n' + 
+    currentResults.map((r, i) => (i+1) + ',' + r.student + ',' + r.caseId + ',' + r.caseName + ',' + r.caseType).join('\n');
+  
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = '案例分配_' + new Date().toLocaleDateString('zh-CN').replace(/\//g, '-') + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('CSV文件已下载！');
+}
+</script>
+</body>
+</html>

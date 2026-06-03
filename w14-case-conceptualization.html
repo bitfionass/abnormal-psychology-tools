@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>W14 个案概念化练习</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#4f46e5;--primary-dark:#3730a3;--success:#10b981;--warning:#f59e0b;--gray-50:#f8fafc;--gray-100:#f1f5f9;--gray-200:#e2e8f0;--gray-300:#cbd5e1;--gray-600:#475569;--gray-800:#1e293b}
+html{font-size:16px}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--gray-100);color:var(--gray-800);min-height:100vh;padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+
+.container{max-width:100%;margin:0 auto}
+
+/* 头部 */
+header{text-align:center;margin-bottom:20px;padding:24px 16px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white;border-radius:16px}
+header h1{font-size:1.5em;margin-bottom:6px}
+header p{font-size:0.9em;opacity:0.9}
+
+/* 步骤指示器 */
+.steps{display:flex;justify-content:center;gap:8px;margin-bottom:20px}
+.step{padding:8px 16px;background:white;border-radius:20px;font-size:0.8em;font-weight:600;color:var(--gray-600);border:2px solid var(--gray-200)}
+.step.active{background:var(--primary);color:white;border-color:var(--primary)}
+.step.completed{background:var(--success);color:white;border-color:var(--success)}
+
+/* 卡片 */
+.card{background:white;border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,0.06)}
+.card h2{font-size:1.05em;color:var(--gray-800);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+
+/* 表单 */
+.form-group{margin-bottom:14px}
+.form-label{display:block;font-size:0.85em;font-weight:600;color:var(--gray-600);margin-bottom:8px}
+input,textarea{width:100%;padding:14px;border:2px solid var(--gray-200);border-radius:12px;font-size:16px;outline:none;transition:border-color 0.2s;-webkit-appearance:none}
+input:focus,textarea:focus{border-color:var(--primary)}
+textarea{height:120px;resize:vertical}
+
+/* 案例展示 */
+.case-display{background:var(--gray-50);border-radius:12px;padding:16px;margin-bottom:16px;border-left:4px solid var(--primary)}
+.case-display h3{font-size:1em;margin-bottom:8px;color:var(--primary)}
+.case-display p{font-size:0.9em;line-height:1.6;color:var(--gray-600)}
+
+/* 按钮 */
+.btn{padding:14px 20px;border-radius:12px;font-size:1em;font-weight:600;cursor:pointer;border:none;transition:all 0.2s;-webkit-appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%}
+.btn-primary{background:var(--primary);color:white}
+.btn-primary:hover,.btn-primary:active{background:var(--primary-dark)}
+.btn-success{background:var(--success);color:white}
+.btn-success:hover,.btn-success:active{background:#059669}
+.btn-outline{background:white;color:var(--primary);border:2px solid var(--primary)}
+.btn-outline:hover,.btn-outline:active{background:var(--gray-50)}
+.btn-warning{background:var(--warning);color:white}
+.btn-group{display:flex;gap:10px;margin-top:16px}
+
+/* 结果 */
+.success-msg{background:#d1fae5;color:#065f46;padding:14px;border-radius:10px;margin-bottom:16px;font-size:0.95em;display:none}
+.error-msg{background:#fee2e2;color:#dc2626;padding:14px;border-radius:10px;margin-bottom:16px;font-size:0.95em;display:none}
+
+/* 提示 */
+.hint{font-size:0.8em;color:var(--gray-500);margin-top:8px;line-height:1.5}
+
+/* 5P表格 */
+.five-p-grid{display:grid;gap:12px}
+.p-item{background:var(--gray-50);border-radius:10px;padding:12px}
+.p-item label{display:block;font-size:0.85em;font-weight:600;color:var(--primary);margin-bottom:6px}
+.p-item textarea{height:80px;font-size:14px}
+
+/* 隐藏/显示 */
+.hidden{display:none!important}
+
+@media(min-width:768px){
+  .container{max-width:600px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <h1>📋 W14 个案概念化练习</h1>
+  <p>随机抽取案例 · 分步完成5P概念化</p>
+</header>
+
+<!-- 步骤指示器 -->
+<div class="steps">
+  <div class="step active" id="step1">1. 登录</div>
+  <div class="step" id="step2">2. 抽案例</div>
+  <div class="step" id="step3">3. 活动一</div>
+  <div class="step" id="step4">4. 活动二</div>
+  <div class="step" id="step5">5. 活动三</div>
+  <div class="step" id="step6">6. 活动四</div>
+</div>
+
+<!-- 第一步：学生登录 -->
+<div id="phase1" class="card">
+  <h2>👤 学生信息</h2>
+  <div class="form-group">
+    <label class="form-label">姓名</label>
+    <input type="text" id="studentName" placeholder="请输入你的姓名">
+  </div>
+  <div class="form-group">
+    <label class="form-label">学号</label>
+    <input type="text" id="studentId" placeholder="请输入你的学号">
+  </div>
+  <button class="btn btn-primary" onclick="goToPhase2()">下一步：抽取案例 →</button>
+</div>
+
+<!-- 第二步：随机抽取案例 -->
+<div id="phase2" class="card hidden">
+  <h2>🎲 随机抽取案例</h2>
+  <p style="margin-bottom:16px;color:var(--gray-600);font-size:0.9em">点击按钮随机抽取一个案例，完成后续四个活动。</p>
+  <button class="btn btn-primary" id="drawBtn" onclick="drawCase()">🎲 抽取案例</button>
+  
+  <div id="caseDisplay" class="case-display hidden">
+    <h3 id="caseName"></h3>
+    <p id="caseInfo"></p>
+    <p id="caseCategory"></p>
+  </div>
+  
+  <button class="btn btn-outline hidden" id="startBtn" onclick="goToPhase3()">开始活动一 →</button>
+</div>
+
+<!-- 第三步：活动一 - 两层阅读 -->
+<div id="phase3" class="card hidden">
+  <h2>📖 活动一：两层阅读</h2>
+  
+  <div class="case-display">
+    <h3>第一层：症状清单</h3>
+    <p id="symptomList"></p>
+  </div>
+  
+  <div class="form-group">
+    <label class="form-label">看到这些症状，你脑海中浮现出什么样的人？</label>
+    <textarea id="firstImpression" placeholder="请写下你的第一印象..."></textarea>
+    <div class="hint">不需要完整描述，关键词即可</div>
+  </div>
+  
+  <div class="case-display" id="fullCaseDisplay">
+    <h3>第二层：完整背景资料</h3>
+    <p id="fullCaseText"></p>
+  </div>
+  
+  <div class="form-group">
+    <label class="form-label">看完完整资料后，你的理解有什么变化？</label>
+    <textarea id="secondImpression" placeholder="对比两次阅读，你的理解有什么不同？"></textarea>
+  </div>
+  
+  <button class="btn btn-primary" onclick="goToPhase4()">下一步：活动二 →</button>
+</div>
+
+<!-- 第四步：活动二 - 翻译练习 -->
+<div id="phase4" class="card hidden">
+  <h2>✍️ 活动二：翻译练习</h2>
+  
+  <div class="case-display">
+    <h3>任务说明</h3>
+    <p>请把诊断标签翻译成一个人的故事。</p>
+    <p style="margin-top:8px"><strong>诊断标签：</strong><span id="diagnosisLabel"></span></p>
+  </div>
+  
+  <div class="form-group">
+    <label class="form-label">把这个诊断翻译成一个"人的故事"</label>
+    <textarea id="translation" placeholder="用你自己的话，描述这个人是怎么走到今天的..."></textarea>
+    <div class="hint">200字左右，重点是"这个人经历了什么"</div>
+  </div>
+  
+  <button class="btn btn-primary" onclick="goToPhase5()">下一步：活动三 →</button>
+</div>
+
+<!-- 第五步：活动三 - 5P填表 -->
+<div id="phase5" class="card hidden">
+  <h2>📝 活动三：5P概念化</h2>
+  
+  <div class="case-display">
+    <h3>5P模型框架</h3>
+    <p><strong>Presenting</strong> - 现在怎么了？</p>
+    <p><strong>Predisposing</strong> - 为什么脆弱？</p>
+    <p><strong>Precipitating</strong> - 什么触发？</p>
+    <p><strong>Perpetuating</strong> - 什么维持？</p>
+    <p><strong>Protective</strong> - 有什么资源？</p>
+  </div>
+  
+  <div class="five-p-grid">
+    <div class="p-item">
+      <label>Presenting（当前问题）</label>
+      <textarea id="p1" placeholder="主诉、症状、功能损害..."></textarea>
+    </div>
+    <div class="p-item">
+      <label>Predisposing（素质因素）</label>
+      <textarea id="p2" placeholder="童年经历、家族史、人格特点..."></textarea>
+    </div>
+    <div class="p-item">
+      <label>Precipitating（诱发因素）</label>
+      <textarea id="p3" placeholder="触发事件..."></textarea>
+    </div>
+    <div class="p-item">
+      <label>Perpetuating（维持因素）</label>
+      <textarea id="p4" placeholder="什么让问题持续不愈？"></textarea>
+    </div>
+    <div class="p-item">
+      <label>Protective（保护因素）</label>
+      <textarea id="p5" placeholder="什么可以帮助恢复？"></textarea>
+    </div>
+  </div>
+  
+  <button class="btn btn-primary" onclick="goToPhase6()">下一步：活动四 →</button>
+</div>
+
+<!-- 第六步：活动四 - 治疗师的第一句话 -->
+<div id="phase6" class="card hidden">
+  <h2>💬 活动四：治疗师的第一句话</h2>
+  
+  <div class="case-display">
+    <h3>场景设定</h3>
+    <p>你是咨询师，<span id="caseName2"></span>走进咨询室。根据你的5P概念化，你会说的第一句话是什么？</p>
+  </div>
+  
+  <div class="form-group">
+    <label class="form-label">你见到来访者说的第一句话</label>
+    <textarea id="firstSentence" placeholder="写下你会说的第一句话..."></textarea>
+  </div>
+  
+  <div class="form-group">
+    <label class="form-label">为什么这么说？（简要说明）</label>
+    <textarea id="reason" placeholder="你的概念化如何指导了这句话？"></textarea>
+  </div>
+  
+  <div class="success-msg" id="successMsg"></div>
+  <div class="error-msg" id="errorMsg"></div>
+  
+  <button class="btn btn-success" id="submitBtn" onclick="submitAll()">✓ 提交所有答案</button>
+</div>
+
+<!-- 完成页面 -->
+<div id="phase7" class="card hidden">
+  <h2>🎉 完成！</h2>
+  <div class="case-display">
+    <h3>提交成功</h3>
+    <p id="completionMsg"></p>
+  </div>
+  <button class="btn btn-outline" onclick="location.reload()">重新开始</button>
+</div>
+</div>
+
+<script>
+// 60个案例数据
+const cases = [
+  {id:1,name:"小雨",age:"女 · 18岁 · 高三学生",category:"抑郁障碍",severity:"中重度",
+   symptoms:"成绩下滑、上课走神、沉默寡言、睡眠差、食欲下降、'活着有什么意义'",
+   fullText:"小雨从小成绩优秀，是家里的'乖女儿'。父母都是农民，反复跟她说'你考上大学就是全家的希望'。高三开学后给自己定了'必须上985'的目标，第一次月考排名班级第15名后大哭，觉得'完了，考不上了'。之后每天学到凌晨1点但效率越来越低，开始回避社交，作文里写'活着到底有什么意义'。母亲性格温和但焦虑，父亲沉默寡言。",
+   diagnosis:"重性抑郁障碍"},
+  
+  {id:2,name:"李队长",age:"男 · 35岁 · 消防队中队长",category:"创伤及应激相关",severity:"重度",
+   symptoms:"噩梦、过度警觉、回避火灾相关事物、易激惹、酗酒、情感压抑",
+   fullText:"三个月前带队处置化工厂爆炸，战友小刘在二次爆炸中牺牲。事故后一周表现正常，但从第二周开始反复做噩梦——梦到小刘在火里喊'队长救我'。开始回避与事故相关的一切，申请调到后勤岗位。在家脾气越来越差，开始每天喝半瓶白酒。父亲从小教育他'男人不能哭'，有一个关系很好的老战友但最近不太联系了。",
+   diagnosis:"创伤后应激障碍"},
+  
+  {id:3,name:"小陈",age:"男 · 20岁 · 大二计算机专业",category:"焦虑障碍",severity:"中度",
+   symptoms:"不敢当众发言、脸红手抖、回避食堂、选课回避presentation、'所有人都在笑我'",
+   fullText:"从小性格内向但成绩好。上大学后第一次小组汇报时大脑空白、脸涨通红，觉得'所有人都在笑我'。之后逃避一切需要当众发言的场合，选课专门挑不需要presentation的课。开始回避食堂，'人太多，别人会看我'。父亲话很少期望很高，母亲性格强势从小替他做决定。最近开始逃避去食堂，经常叫外卖在宿舍吃。",
+   diagnosis:"社交焦虑障碍"},
+  
+  {id:4,name:"阿美",age:"女 · 21岁 · 大三学生",category:"人格障碍",severity:"重度",
+   symptoms:"情绪不稳定、人际关系极端、自伤行为、被抛弃恐惧、理想化-贬低交替",
+   fullText:"同学眼中'情绪化'的人，友谊模式：刚开始觉得对方'简直是我的灵魂伴侣'，几周后因小事暴怒。大二谈恋爱，两个月后因男友没及时回消息就威胁'你不回我我就去死'，分手后割手腕。父母6岁时离婚，母亲情绪不稳定，好的时候对她很好，不好的时候骂她'你怎么跟你爸一样没用'。从13岁开始有割手腕行为，'割的时候不觉得疼，反而觉得心里没那么堵了'。",
+   diagnosis:"边缘型人格障碍"},
+  
+  {id:5,name:"小宇",age:"男 · 14岁 · 初二学生",category:"强迫及相关障碍",severity:"中度",
+   symptoms:"洗手洗到手裂、做作业反复擦写、检查门锁、'感觉要出大事'",
+   fullText:"从小做事认真成绩优秀。从初一开始，洗手要按固定顺序每个步骤洗7遍，冬天手洗得裂口出血还是停不下来。做作业写一个字觉得'不好看'就擦掉重写，一份500字作文能写3-4个小时。睡前要检查门锁，最多一晚检查12次。他自己知道这些行为'没必要'，但如果不做就会特别焦虑。父亲是工程师做事非常严谨，母亲是小学老师性格温和但容易焦虑。",
+   diagnosis:"强迫症"},
+  
+  {id:6,name:"天天",age:"男 · 9岁 · 三年级学生",category:"神经发育障碍",severity:"中度",
+   symptoms:"上课坐不住、作业拖拉、冲动行为、注意力难集中、'管不住自己'",
+   fullText:"从幼儿园起就是'特别闹'的孩子。上课很难集中注意力超过10分钟，经常走神玩文具看窗外。作业拖拉严重，一份30分钟的作业能磨蹭3个小时。冲动行为多，排队忍不住插队，和同学玩着玩着就动手。但对自己感兴趣的事可以专注很长时间。父亲小时候也是'特别闹'，母亲性格急躁经常对他大吼。智力正常（韦氏IQ 108）。",
+   diagnosis:"注意缺陷/多动障碍"},
+  
+  {id:7,name:"张女士",age:"女 · 38岁 · 公司会计",category:"焦虑障碍",severity:"中重度",
+   symptoms:"突然心跳加速、喘不过气、'我要死了'、不敢一个人出门、随身带速效救心丸",
+   fullText:"两个月前加班时突然心慌心跳快得像要从嗓子眼蹦出来，叫了救护车但检查全部正常。之后类似情况反复发作，每次发作10-20分钟。开始害怕下一次发作，不敢一个人出门不敢坐公交车。最近不敢去上班，'万一在办公室发作怎么办'。母亲有焦虑症病史，工作压力大最近公司裁员，儿子即将小升初，丈夫性格直觉得'想开点就好了'。",
+   diagnosis:"惊恐障碍"},
+  
+  {id:8,name:"小艺",age:"女 · 16岁 · 高一舞蹈特长生",category:"进食障碍",severity:"重度",
+   symptoms:"体重过低、觉得自己胖、控制饮食、频繁量体重、月经停止",
+   fullText:"半年前舞蹈老师随口说'小艺你最近是不是胖了一点？'，之后开始控制饮食。三个月内体重从47公斤降到38公斤（BMI约14.8），月经停了两个月。但照镜子仍然觉得'大腿太粗'。每天跑5公里即使头晕也要跑完。母亲对身材有焦虑经常说'我又胖了'，小艺从小是'乖孩子'追求完美。舞蹈班里其他女生都很瘦，她曾说'她们都比我瘦'。",
+   diagnosis:"神经性厌食"},
+  
+  {id:9,name:"老张",age:"男 · 58岁 · 退休工人",category:"抑郁障碍",severity:"中度",
+   symptoms:"情绪低落、'活着没意思'、不参加社区活动、退缩、反复说老伴去世的事",
+   fullText:"老伴去世一年，女儿在外地工作每月打一次电话。以前喜欢下棋遛鸟，现在什么都不想做。反复说'活着没意思'，不参加社区活动。既往无精神疾病史，性格开朗。最近睡眠变差，经常半夜醒来。邻居说他'瘦了很多'。",
+   diagnosis:"老年抑郁障碍"},
+  
+  {id:10,name:"小林",age:"女 · 19岁 · 大二女生",category:"焦虑障碍",severity:"中度",
+   symptoms:"过度担心、坐立不安、肌肉紧张、睡眠差、'总是担心有不好的事发生'",
+   fullText:"从小就是'想太多'的人。上大学后担心的事情越来越多——担心考试挂科、担心找不到工作、担心父母生病。每天都在想各种'万一'。最近开始失眠，躺在床上脑子停不下来。母亲也是容易焦虑的人，经常打电话问'你怎么样'。室友说她'就是太紧张了'。",
+   diagnosis:"广泛性焦虑障碍"},
+  
+  {id:11,name:"王女士",age:"女 · 45岁 · 公司职员",category:"强迫及相关障碍",severity:"中度",
+   symptoms:"无法丢弃物品、家里堆满东西、'扔了会后悔'、生活空间被占用",
+   fullText:"从小家里条件不好，什么东西都不舍得扔。结婚后开始囤积，'万一以后用得上呢'。家里堆满了塑料袋、旧报纸、过期杂志。丈夫多次要求清理，她都不同意。最近家里来客人发现连沙发上都堆满了东西。她说'扔了会后悔'，但其实很多东西已经好几年没用过了。",
+   diagnosis:"囤积障碍"},
+  
+  {id:12,name:"小杨",age:"男 · 22岁 · 大四学生",category:"精神分裂症谱系",severity:"重度",
+   symptoms:"听到有人议论自己、觉得同学要害他、上课走神、不洗澡不换衣服",
+   fullText:"大三开始觉得同学在背后议论自己，后来听到有人在骂他（但别人听不到）。觉得学校有人要害他，在他水杯里下毒。开始不去上课，整天待在宿舍拉上窗帘。不洗澡不换衣服，室友说他'变了一个人'。家族史：舅舅有精神分裂症。",
+   diagnosis:"精神分裂症"},
+  
+  {id:13,name:"刘女士",age:"女 · 30岁 · 全职妈妈",category:"分离障碍",severity:"中度",
+   symptoms:"突然'失忆'、不知道自己是谁、'另一个人'在说话、丈夫说她'有时候像变了个人'",
+   fullText:"小时候被父亲家暴，母亲视而不见。结婚后偶尔会突然'失忆'，不知道自己在哪里。丈夫说她'有时候说话声音都不一样'。最近更严重了，有一次醒来发现自己在一个陌生的地方。她自己说'有时候觉得身体不是自己的'。",
+   diagnosis:"分离性身份障碍"},
+  
+  {id:14,name:"赵先生",age:"男 · 28岁 · 无固定职业",category:"人格障碍",severity:"重度",
+   symptoms:"多次打架斗殴、欺骗、没有愧疚感、'他们活该'、小时候虐待动物",
+   fullText:"从小打架斗殴，初中辍学。多次因为打架进派出所，每次都说是'对方先动手'。没有固定工作，靠借钱度日。前女友说他'从来没有道歉过'。小时候虐待过邻居家的猫。父亲也是这样的人，经常打他和母亲。",
+   diagnosis:"反社会型人格障碍"},
+  
+  {id:15,name:"陈奶奶",age:"女 · 75岁 · 退休教师",category:"神经认知障碍",severity:"中度",
+   symptoms:"记忆力下降、忘记回家的路、不认识家人、'这是哪里'",
+   fullText:"以前是中学老师，记忆力很好。三年前开始忘事，先是忘记钥匙放哪里，后来忘记关煤气。去年有一次出门找不到回家的路，被警察送回来。现在不认识儿子，有时候叫女儿'妈妈'。CT显示脑萎缩。女儿辞了工作在家照顾她。",
+   diagnosis:"阿尔茨海默病"},
+  
+  {id:16,name:"小美",age:"女 · 12岁 · 初一学生",category:"焦虑障碍",severity:"中度",
+   symptoms:"看到狗就尖叫、全身发抖、宁可绕远路也不走有狗的路",
+   fullText:"5岁时被邻居家的狗追过，从此特别怕狗。现在看到狗（哪怕是小狗）就会尖叫、全身发抖、心跳加速。宁可绕20分钟的路也不走有狗的那条。同学笑她'胆小鬼'。父母觉得'长大就好了'，但一直没有好转。",
+   diagnosis:"特定恐怖症"},
+  
+  {id:17,name:"周女士",age:"女 · 25岁 · 公司文员",category:"进食障碍",severity:"中重度",
+   symptoms:"暴食后催吐、'控制不住'、吃完就后悔、秘密进行",
+   fullText:"大学时为了减肥开始节食，后来'控制不住'开始暴食。一次能吃一整个蛋糕、两份炸鸡。吃完就后悔，然后去催吐。每周暴食3-4次，都是一个人偷偷进行。体重忽上忽下。妈妈说她'就是管不住嘴'。她自己说'吐完觉得轻松一点'。",
+   diagnosis:"神经性贪食"},
+  
+  {id:18,name:"孙先生",age:"男 · 40岁 · 公司经理",category:"睡眠障碍",severity:"中度",
+   symptoms:"入睡困难、半夜醒来、白天疲惫、'越想睡越睡不着'",
+   fullText:"工作压力大，经常加班到很晚。躺在床上脑子停不下来，想着明天要开的会、要处理的邮件。经常凌晨2-3点才能睡着，早上6点又要起床。白天疲惫、注意力下降。试过喝酒助眠，但效果越来越差。最近开始吃安眠药。",
+   diagnosis:"失眠障碍"},
+  
+  {id:19,name:"吴小姐",age:"女 · 24岁 · 模特",category:"人格障碍",severity:"中度",
+   symptoms:"情绪夸张、'戏剧化'、需要成为关注中心、容易受他人影响",
+   fullText:"从小就是'戏精'，什么事情都要夸张表现。交朋友很快，但维持不久。恋爱时恨不得24小时和对方在一起，分手后很快就找下一个。喜欢穿鲜艳的衣服、化浓妆。同事说她'太作了'。她自己说'平淡的生活太无聊了'。",
+   diagnosis:"表演型人格障碍"},
+  
+  {id:20,name:"郑先生",age:"男 · 8岁 · 二年级学生",category:"神经发育障碍",severity:"中度",
+   symptoms:"不看人眼睛、不会交朋友、只喜欢恐龙、说话像'小教授'",
+   fullText:"从小就不看人眼睛，叫他名字也不理。幼儿园时其他小朋友玩，他一个人在角落看恐龙百科。说话很正式，像'小教授'。不会察言观色，经常说'你今天怎么这么胖'。父母带他去检查，智力正常。现在上小学，还是没有朋友。",
+   diagnosis:"自闭症谱系障碍"},
+  
+  {id:21,name:"小周",age:"女 · 20岁 · 大三学生",category:"抑郁障碍",severity:"中度",
+   symptoms:"长期情绪低落、'一直都不开心'、效率低、觉得自己不够好",
+   fullText:"从高中开始就'一直都不开心'，但还能正常上学。上大学后情绪更低落了，觉得自己什么都做不好。没有特别的触发事件，就是'一直这样'。成绩中等，没有挂科但也拿不了奖学金。室友说她'就是太消极了'。母亲说'她从小就爱哭'。",
+   diagnosis:"持续性抑郁障碍"},
+  
+  {id:22,name:"林女士",age:"女 · 35岁 · 全职妈妈",category:"焦虑障碍",severity:"中重度",
+   symptoms:"不敢坐地铁、不敢去超市、不敢一个人在家、'万一出事没人救我'",
+   fullText:"三年前在地铁上突然心跳加速、喘不过气，从此不敢坐地铁。后来扩展到不敢去超市、不敢开车。现在丈夫出差就让妈妈来陪她。知道'不应该这么怕'，但控制不住。母亲说'她从小就胆小'。",
+   diagnosis:"广场恐怖症"},
+  
+  {id:23,name:"小月",age:"女 · 6岁 · 幼儿园大班",category:"焦虑障碍",severity:"中度",
+   symptoms:"在幼儿园不说话、在家正常说话、'老师问我我也不想说'",
+   fullText:"在家里有说有笑，一到幼儿园就不说话了。老师叫她回答问题，她就低着头不吭声。已经持续一年多了。父母说'在家话很多啊'。同学说'她从来不说话'。最近开始不愿意去幼儿园。",
+   diagnosis:"选择性缄默症"},
+  
+  {id:24,name:"小刘",age:"男 · 17岁 · 高二学生",category:"强迫及相关障碍",severity:"中度",
+   symptoms:"觉得自己鼻子太丑、反复照镜子、不想出门见人、'别人都在看我的鼻子'",
+   fullText:"一年前有人说他鼻子有点大，从此特别在意。每天照镜子几十次，越看越觉得丑。开始戴口罩出门，不想让别人看到他的鼻子。成绩下滑，因为'上课也想着鼻子的事'。父母说'鼻子很正常啊'，但他不信。",
+   diagnosis:"躯体变形障碍"},
+  
+  {id:25,name:"小张",age:"女 · 15岁 · 初三学生",category:"强迫及相关障碍",severity:"中度",
+   symptoms:"控制不住拔自己的头发、头顶有一块秃的、'拔的时候不觉得疼'",
+   fullText:"初一开始控制不住拔自己的头发，'拔的时候不觉得疼，反而觉得轻松'。头顶已经有一块秃的了。上课时也忍不住拔，写作业时更是停不下来。妈妈发现后带她去看医生。她自己说'想停但停不下来'。",
+   diagnosis:"拔毛癖"},
+  
+  {id:26,name:"小李",age:"男 · 25岁 · 程序员",category:"创伤及应激相关",severity:"中度",
+   symptoms:"一周前目睹车祸、反复回想、做噩梦、不敢开车、'太可怕了'",
+   fullText:"一周前在上班路上目睹一起严重车祸，看到有人当场死亡。之后反复回想那个画面，做噩梦。现在不敢开车上班，坐出租车也会心跳加速。工作效率下降，总是走神。知道'已经过去了'，但控制不住去想。",
+   diagnosis:"急性应激障碍"},
+  
+  {id:27,name:"老王",age:"男 · 50岁 · 工厂工人",category:"创伤及应激相关",severity:"中度",
+   symptoms:"下岗后情绪低落、失眠、'没用了'、喝酒、和老婆吵架",
+   fullText:"在工厂干了20年，突然下岗。之后情绪低落，觉得'没用了'。开始喝酒，每天半斤白酒。和老婆吵架越来越多，老婆说'你以前不是这样的'。不愿意去找工作，'这么大年纪谁要'。儿子在外地打工。",
+   diagnosis:"适应障碍"},
+  
+  {id:28,name:"阿珍",age:"女 · 28岁 · 服务员",category:"分离障碍",severity:"中度",
+   symptoms:"有时候'不知道自己在哪'、'身体不是自己的'、小时候被性侵",
+   fullText:"6-8岁时被邻居叔叔性侵，没有告诉任何人。长大后偶尔会突然'不知道自己在哪'，'感觉身体不是自己的'。最近更频繁了，有时候上班上着上着就'飘走了'。男朋友说她'有时候眼神空空的'。",
+   diagnosis:"人格解体/现实解体障碍"},
+  
+  {id:29,name:"陈女士",age:"女 · 42岁 · 公司职员",category:"躯体症状",severity:"中度",
+   symptoms:"反复去医院检查、'总觉得身体有病'、检查正常也不信、'医生肯定漏诊了'",
+   fullText:"三年前体检发现一个小结节，虽然医生说没事，但她总担心是癌。反复去医院做各种检查，每次检查正常都不放心，'医生肯定漏诊了'。最近开始失眠，'万一真的是癌怎么办'。丈夫说她'就是太紧张了'。",
+   diagnosis:"疾病焦虑障碍"},
+  
+  {id:30,name:"小杨2",age:"男 · 19岁 · 大一学生",category:"进食障碍",severity:"中度",
+   symptoms:"暴食后运动、'吃多了就要消耗掉'、每天跑步10公里、'不能胖'",
+   fullText:"高中时为了减肥开始节食，后来'控制不住'开始暴食。暴食后特别内疚，就要疯狂运动。现在每天跑步10公里，下雨就在宿舍做俯卧撑。'吃多了就要消耗掉'。体重忽上忽下。室友说他'就是太在意身材了'。",
+   diagnosis:"神经性贪食"},
+  
+  {id:31,name:"小赵",age:"男 · 16岁 · 高一学生",category:"睡眠障碍",severity:"中度",
+   symptoms:"白天总是想睡、上课睡着、'怎么睡都不够'、成绩下滑",
+   fullText:"从初中开始白天总是想睡，上课经常睡着。晚上睡8-9个小时，白天还是困。成绩下滑，'不是不想学，是真的控制不住'。父母说他'就是懒'。最近开始打呼噜，有时候睡着睡着会突然'瘫掉'。",
+   diagnosis:"嗜睡障碍"},
+  
+  {id:32,name:"刘先生",age:"男 · 35岁 · 公司职员",category:"性功能障碍",severity:"轻度",
+   symptoms:"性生活时'出不来'、'太慢了'、妻子不满意、'压力越来越大'",
+   fullText:"结婚三年，性生活时'出不来'，有时候要1个小时以上。妻子开始不满意，'你是不是对我没感觉'。压力越来越大，后来更难了。自己偷偷查过，'可能是心理问题'。妻子说'要不要去看看医生'。",
+   diagnosis:"延迟射精"},
+  
+  {id:33,name:"小明",age:"男 · 10岁 · 四年级学生",category:"破坏性障碍",severity:"中度",
+   symptoms:"和老师顶嘴、故意惹大人生气、'凭什么听你的'、成绩下降",
+   fullText:"从二年级开始和老师顶嘴，'凭什么听你的'。故意惹大人生气，让他往东偏往西。成绩下降，'不想写作业就是不写'。父母离婚，跟着爸爸，爸爸经常出差。老师说'他就是缺管教'。",
+   diagnosis:"对立违抗障碍"},
+  
+  {id:34,name:"老陈",age:"男 · 45岁 · 出租车司机",category:"破坏性障碍",severity:"中度",
+   symptoms:"路怒症、'控制不住发火'、砸过方向盘、'事后后悔'",
+   fullText:"开出租车20年，'路上什么人都有'。最近几年越来越控制不住发火，被人超车就想骂人。有一次被别车，下车差点打人。砸过好几次方向盘，'事后后悔，当时就是控制不住'。妻子说'你以前不这样'。有高血压。",
+   diagnosis:"间歇性暴怒障碍"},
+  
+  {id:35,name:"老周",age:"男 · 55岁 · 退休工人",category:"物质相关障碍",severity:"重度",
+   symptoms:"每天喝酒、'不喝难受'、戒过几次都失败、'再来一杯'",
+   fullText:"从20岁开始喝酒，40岁后越喝越多。现在每天至少半斤白酒，'不喝难受'。戒过几次，每次坚持不到一周就复喝。'再来一杯'是口头禅。妻子说'酒就是他的命'。肝功能已经不好了。",
+   diagnosis:"酒精使用障碍"},
+  
+  {id:36,name:"小吴",age:"男 · 22岁 · 大学生",category:"物质相关障碍",severity:"中度",
+   symptoms:"网上赌博、'这次一定能赢回来'、输了5万、借钱赌",
+   fullText:"大一接触网上赌博，开始赢了一些钱。后来越输越多，总想着'这次一定能赢回来'。已经输了5万，都是借的。不敢告诉父母，'他们知道了会打死我'。最近上课也想着赌，'回本了就不赌了'。",
+   diagnosis:"赌博障碍"},
+  
+  {id:37,name:"老李",age:"男 · 50岁 · 公务员",category:"人格障碍",severity:"中度",
+   symptoms:"总觉得别人在背后议论他、'他们肯定在说我坏话'、不信任任何人",
+   fullText:"从小就觉得别人在背后议论他。工作后更严重了，'同事肯定在说我坏话'。从来不参加聚餐，'他们在笑话我'。妻子说'你就是太多疑了'。最近开始在办公室装摄像头，'看看谁在我背后搞鬼'。",
+   diagnosis:"偏执型人格障碍"},
+  
+  {id:38,name:"张总",age:"男 · 40岁 · 公司老板",category:"人格障碍",severity:"中度",
+   symptoms:"觉得自己比别人强、'他们都不如我'、需要别人崇拜、'我配得上最好的'",
+   fullText:"从小成绩好，一直是'别人家的孩子'。创业成功后更觉得自己厉害了。'他们都不如我'是他的口头禅。需要别人崇拜，开会时如果有人不同意就发火。'我配得上最好的'——最好的车、最好的衣服。妻子说'他就是太自恋了'。",
+   diagnosis:"自恋型人格障碍"},
+  
+  {id:39,name:"小何",age:"女 · 8岁 · 二年级学生",category:"睡眠障碍",severity:"中度",
+   symptoms:"做噩梦、'怪物要吃我'、不敢一个人睡、半夜哭醒",
+   fullText:"从幼儿园开始经常做噩梦，梦到怪物要吃她。半夜哭醒，'妈妈我害怕'。不敢一个人睡，要妈妈陪着。最近更频繁了，每周3-4次。白天也害怕，'怪物会不会来找我'。父母说'就是想象力太丰富了'。",
+   diagnosis:"梦魇障碍"},
+  
+  {id:40,name:"阿强",age:"男 · 14岁 · 初二学生",category:"破坏性障碍",severity:"重度",
+   symptoms:"欺负同学、偷东西、'他们活该'、打伤过人、不在乎别人的感受",
+   fullText:"从小学开始欺负同学，'他们活该'。偷过同学的东西，被发现也不承认。打伤过同学，赔了医药费。不在乎别人的感受，'关我什么事'。父母离婚，跟着妈妈，妈妈管不了。老师说'他就是坏孩子'。",
+   diagnosis:"品行障碍"},
+  
+  {id:41,name:"小杰",age:"男 · 16岁 · 高一学生",category:"性别烦躁",severity:"中度",
+   symptoms:"觉得自己是女生、'生错了身体'、想穿女装、'不想做男生'",
+   fullText:"从小喜欢和女生玩，喜欢穿妈妈的衣服。上了初中开始觉得'自己应该是女生'。'生错了身体'是他的原话。偷偷买过女装，被妈妈发现后很尴尬。'不想做男生'。父母不理解，'你就是被带坏了'。",
+   diagnosis:"性别烦躁"},
+  
+  {id:42,name:"小芳",age:"女 · 18岁 · 高三学生",category:"躯体症状",severity:"中度",
+   symptoms:"突然说不了话、'发不出声音'、检查声带正常、'我也不知道为什么'",
+   fullText:"高三压力大，某天早上突然说不了话。'发不出声音'。去医院检查声带完全正常。'我也不知道为什么'。写字交流了两周，后来突然又能说了。但之后又复发了几次。父母说'就是压力太大了'。她自己说'我控制不了'。",
+   diagnosis:"转换障碍"},
+  
+  {id:43,name:"小林2",age:"男 · 20岁 · 大二学生",category:"分离障碍",severity:"中度",
+   symptoms:"'感觉自己不在这里'、'世界不真实'、'像在看电影'",
+   fullText:"大一期末考试时突然'感觉自己不在这里'，'世界不真实'，'像在看电影'。持续了几个小时才恢复。之后偶尔会发作。'我知道我在教室，但感觉不是真的'。没有创伤史，就是压力大。室友说'他就是太紧张了'。",
+   diagnosis:"人格解体/现实解体障碍"},
+  
+  {id:44,name:"马先生",age:"男 · 45岁 · 会计",category:"人格障碍",severity:"中度",
+   symptoms:"完美主义、'不能出错'、控制欲强、'规则就是规则'",
+   fullText:"从小就是'完美主义者'，作业必须写得工工整整。工作后更严重了，'不能出错'，一个数字要检查好几遍。控制欲强，家里什么东西放哪里都要按他的来。'规则就是规则'。妻子说'和他生活太累了'。",
+   diagnosis:"强迫型人格障碍"},
+  
+  {id:45,name:"老孙",age:"男 · 70岁 · 退休干部",category:"神经认知障碍",severity:"重度",
+   symptoms:"意识混乱、'我在哪'、不认识家人、'你们是谁'、晚上更严重",
+   fullText:"昨天还能正常说话，今天早上醒来就不认识家人了。'我在哪'、'你们是谁'。晚上更严重，说看到'有人在窗外'。有高血压和糖尿病史。女儿说'昨天还好好的啊'。急诊做了CT，发现有轻微脑梗。",
+   diagnosis:"谵妄"},
+  
+  {id:46,name:"李奶奶",age:"女 · 80岁 · 退休工人",category:"神经认知障碍",severity:"重度",
+   symptoms:"不认识家人、'我女儿在哪'、不会自己吃饭、'这是什么'",
+   fullText:"五年前开始忘事，三年前不认识儿子，现在不认识所有人。'我女儿在哪'——女儿就站在面前。不会自己吃饭，要人喂。'这是什么'——指着筷子问。大小便也开始失禁。女儿辞职在家照顾她。",
+   diagnosis:"重度神经认知障碍"},
+  
+  {id:47,name:"某男",age:"男 · 30岁 · 无业",category:"性欲倒错",severity:"中度",
+   symptoms:"偷窥、'控制不住'、被拘留过、'就是好奇'",
+   fullText:"从青春期开始对偷窥有强烈兴趣。'控制不住'，经常在公共场所偷窥女性。被拘留过两次，'就是好奇'。没有女朋友，'不知道怎么正常交往'。父母说'他小时候就很奇怪'。",
+   diagnosis:"窥阴障碍"},
+  
+  {id:48,name:"赵女士",age:"女 · 32岁 · 公司职员",category:"躯体症状",severity:"中度",
+   symptoms:"反复去医院、'总觉得身体有病'、检查正常也不信、'医生肯定漏诊了'",
+   fullText:"三年前体检发现一个小结节，虽然医生说没事，但她总担心是癌。反复去医院做各种检查，每次检查正常都不放心，'医生肯定漏诊了'。最近开始失眠，'万一真的是癌怎么办'。丈夫说她'就是太紧张了'。",
+   diagnosis:"疾病焦虑障碍"},
+  
+  {id:49,name:"小宝",age:"男 · 8岁 · 二年级学生",category:"排泄障碍",severity:"轻度",
+   symptoms:"尿床、'我也不想的'、同学笑他、'长大就好了'",
+   fullText:"从小到大一直在尿床，'我也不想的'。现在8岁了，还是每周尿床3-4次。同学笑他'尿床大王'，不愿意去同学家过夜。父母说'长大就好了'，但一直没有好转。最近开始不愿意上学。",
+   diagnosis:"遗尿症"},
+  
+  {id:50,name:"老黄",age:"男 · 50岁 · 工人",category:"物质相关障碍",severity:"中度",
+   symptoms:"戒烟后烦躁、'受不了'、又开始抽、'再来一根'",
+   fullText:"抽了30年烟，每天一包。医生说必须戒烟，'再抽就完了'。戒了三天，'受不了'，全身难受、烦躁、坐立不安。又开始抽了，'再来一根'。妻子说'你就是意志力不够'。他自己说'道理都懂，就是做不到'。",
+   diagnosis:"烟草戒断"},
+  
+  {id:51,name:"小孙",age:"男 · 21岁 · 大三学生",category:"双相障碍",severity:"重度",
+   symptoms:"连续三天不睡觉、'我有伟大的想法'、花光生活费、然后情绪崩溃",
+   fullText:"大二时连续三天不睡觉，'我有伟大的想法'，觉得自己能改变世界。花光了两个月的生活费买了'创业材料'。一周后情绪崩溃，'我什么都做不好'。被送去医院，诊断为双相障碍。家族史：叔叔有类似症状。",
+   diagnosis:"双相I型障碍"},
+  
+  {id:52,name:"小林3",age:"女 · 22岁 · 大四学生",category:"焦虑障碍",severity:"中度",
+   symptoms:"只在表演时紧张、'平时说话没问题'、'一上台就完蛋'",
+   fullText:"平时和朋友聊天没问题，但一要当众发言就紧张。'一上台就完蛋'——脸红、手抖、脑子空白。选课专门挑不需要presentation的课。最近找工作，'面试怎么办'。室友说'你平时不是挺能说的吗'。",
+   diagnosis:"社交焦虑障碍（表演限定型）"},
+  
+  {id:53,name:"王阿姨",age:"女 · 55岁 · 退休教师",category:"焦虑障碍",severity:"中度",
+   symptoms:"担心儿女、'万一出事怎么办'、睡不着、'我就是操心的命'",
+   fullText:"退休后整天担心儿女。儿子加班晚回来就担心'万一出事怎么办'。女儿出差就睡不着，'飞机安全吗'。知道'不应该这么担心'，但控制不住。'我就是操心的命'。丈夫说'孩子们都大了，你别操心了'。",
+   diagnosis:"广泛性焦虑障碍"},
+  
+  {id:54,name:"老周2",age:"男 · 60岁 · 退休工人",category:"分离障碍",severity:"中度",
+   symptoms:"突然忘记自己是谁、'我在哪'、'我叫什么名字'、一天后恢复",
+   fullText:"老伴去世后，某天早上突然忘记自己是谁。'我在哪'、'我叫什么名字'。被送去医院，检查都正常。一天后突然又想起来了。'我也不知道怎么回事'。女儿说'他受刺激了'。之后又发作过两次。",
+   diagnosis:"分离性遗忘症"},
+  
+  {id:55,name:"小陈2",age:"男 · 19岁 · 大一学生",category:"物质相关障碍",severity:"中度",
+   symptoms:"抽大麻、'放松一下'、朋友都抽、'这不算毒品吧'",
+   fullText:"高中时朋友介绍抽大麻，'放松一下'。现在每周抽2-3次，'朋友都抽'。'这不算毒品吧'。最近开始逃课，成绩下滑。室友说他'最近有点不对劲'。父母不知道。他自己说'想戒但戒不掉'。",
+   diagnosis:"大麻使用障碍"},
+  
+  {id:56,name:"陈先生",age:"男 · 35岁 · 公司职员",category:"神经发育障碍",severity:"中度",
+   symptoms:"注意力不集中、'总是走神'、工作拖延、'从小就这样'",
+   fullText:"从小注意力就不集中，上课走神、作业拖拉。但成绩还行，'勉强考上大学'。工作后问题更明显了，开会走神、报告写不完。'从小就这样'。妻子说'你就是不够努力'。最近看到ADHD的科普，'这不就是我吗'。",
+   diagnosis:"成人ADHD"},
+  
+  {id:57,name:"小李2",age:"女 · 16岁 · 高一学生",category:"强迫及相关障碍",severity:"中度",
+   symptoms:"东西必须对称、'不对称就难受'、反复整理书桌、'再摆一次'",
+   fullText:"从小东西就要摆整齐。上了高中更严重了，书桌上的东西必须对称，'不对称就难受'。写作业前要花20分钟整理书桌。'再摆一次'是她的口头禅。成绩下降，因为'花太多时间整理了'。妈妈说'你就是太讲究了'。",
+   diagnosis:"强迫症（对称型）"},
+  
+  {id:58,name:"阿杰",age:"男 · 23岁 · 销售",category:"人格障碍",severity:"中度",
+   symptoms:"情绪夸张、'戏剧化'、需要成为关注中心、容易受他人影响",
+   fullText:"做销售很成功，因为'会来事'。但朋友说他'太作了'，什么事情都要夸张表现。恋爱时恨不得24小时和对方在一起，分手后很快就找下一个。'平淡的生活太无聊了'。最近和客户吵架，'他居然不买我的单'。",
+   diagnosis:"表演型人格障碍"},
+  
+  {id:59,name:"刘女士2",age:"女 · 40岁 · 公司经理",category:"焦虑障碍",severity:"中度",
+   symptoms:"不敢坐飞机、'飞机会掉下来'、出差坐火车、'我就是怕'",
+   fullText:"十年前看了一部空难电影，从此不敢坐飞机。'飞机会掉下来'。出差宁可坐10个小时火车也不坐飞机。公司派她出国出差，她拒绝了。'我就是怕'。丈夫说'飞机比汽车安全多了'，但她就是克服不了。",
+   diagnosis:"特定恐怖症（飞行）"},
+  
+  {id:60,name:"小方",age:"男 · 17岁 · 高二学生",category:"破坏性障碍",severity:"重度",
+   symptoms:"多次纵火、'看到火就兴奋'、'控制不住'、被拘留过",
+   fullText:"从小对火特别感兴趣，'看到火就兴奋'。12岁时第一次在垃圾桶点火，'太刺激了'。之后又纵火好几次，被拘留过。'控制不住'，不烧点什么就难受。父母说'他小时候就喜欢玩火'。最近又在学校纵火，差点烧了教室。",
+   diagnosis:"纵火狂"}
+];
+
+let currentCase = null;
+let studentName = '';
+let studentId = '';
+
+// 步骤更新
+function updateSteps(current) {
+  for (let i = 1; i <= 6; i++) {
+    const step = document.getElementById('step' + i);
+    step.className = 'step' + (i < current ? ' completed' : '') + (i === current ? ' active' : '');
+  }
+}
+
+// 阶段切换
+function goToPhase2() {
+  studentName = document.getElementById('studentName').value.trim();
+  studentId = document.getElementById('studentId').value.trim();
+  
+  if (!studentName || !studentId) {
+    alert('请输入姓名和学号');
+    return;
+  }
+  
+  document.getElementById('phase1').classList.add('hidden');
+  document.getElementById('phase2').classList.remove('hidden');
+  updateSteps(2);
+}
+
+function drawCase() {
+  const randomIndex = Math.floor(Math.random() * cases.length);
+  currentCase = cases[randomIndex];
+  
+  document.getElementById('caseName').textContent = '案例' + currentCase.id + '：' + currentCase.name;
+  document.getElementById('caseInfo').textContent = currentCase.age;
+  document.getElementById('caseCategory').textContent = currentCase.category + ' · ' + currentCase.severity;
+  
+  document.getElementById('caseDisplay').classList.remove('hidden');
+  document.getElementById('startBtn').classList.remove('hidden');
+  document.getElementById('drawBtn').disabled = true;
+  document.getElementById('drawBtn').textContent = '✓ 已抽取';
+}
+
+function goToPhase3() {
+  document.getElementById('phase2').classList.add('hidden');
+  document.getElementById('phase3').classList.remove('hidden');
+  
+  // 填充症状清单
+  document.getElementById('symptomList').textContent = currentCase.symptoms;
+  
+  // 填充完整案例
+  document.getElementById('fullCaseText').textContent = currentCase.fullText;
+  
+  updateSteps(3);
+}
+
+function goToPhase4() {
+  const firstImpression = document.getElementById('firstImpression').value.trim();
+  const secondImpression = document.getElementById('secondImpression').value.trim();
+  
+  if (!firstImpression || !secondImpression) {
+    alert('请完成两层阅读的两个问题');
+    return;
+  }
+  
+  document.getElementById('phase3').classList.add('hidden');
+  document.getElementById('phase4').classList.remove('hidden');
+  
+  // 填充诊断标签
+  document.getElementById('diagnosisLabel').textContent = currentCase.diagnosis;
+  
+  updateSteps(4);
+}
+
+function goToPhase5() {
+  const translation = document.getElementById('translation').value.trim();
+  
+  if (!translation) {
+    alert('请完成翻译练习');
+    return;
+  }
+  
+  document.getElementById('phase4').classList.add('hidden');
+  document.getElementById('phase5').classList.remove('hidden');
+  updateSteps(5);
+}
+
+function goToPhase6() {
+  const p1 = document.getElementById('p1').value.trim();
+  const p2 = document.getElementById('p2').value.trim();
+  const p3 = document.getElementById('p3').value.trim();
+  const p4 = document.getElementById('p4').value.trim();
+  const p5 = document.getElementById('p5').value.trim();
+  
+  if (!p1 || !p2 || !p3 || !p4 || !p5) {
+    alert('请完成5P概念化的所有部分');
+    return;
+  }
+  
+  document.getElementById('phase5').classList.add('hidden');
+  document.getElementById('phase6').classList.remove('hidden');
+  
+  // 填充案例名称
+  document.getElementById('caseName2').textContent = currentCase.name;
+  
+  updateSteps(6);
+}
+
+async function submitAll() {
+  const firstSentence = document.getElementById('firstSentence').value.trim();
+  const reason = document.getElementById('reason').value.trim();
+  
+  if (!firstSentence || !reason) {
+    alert('请完成活动四的所有问题');
+    return;
+  }
+  
+  const submitBtn = document.getElementById('submitBtn');
+  submitBtn.disabled = true;
+  submitBtn.textContent = '提交中...';
+  
+  // 收集所有答案
+  const data = {
+    studentName: studentName,
+    studentId: studentId,
+    caseId: currentCase.id,
+    caseName: currentCase.name,
+    caseCategory: currentCase.category,
+    diagnosis: currentCase.diagnosis,
+    firstImpression: document.getElementById('firstImpression').value.trim(),
+    secondImpression: document.getElementById('secondImpression').value.trim(),
+    translation: document.getElementById('translation').value.trim(),
+    p1: document.getElementById('p1').value.trim(),
+    p2: document.getElementById('p2').value.trim(),
+    p3: document.getElementById('p3').value.trim(),
+    p4: document.getElementById('p4').value.trim(),
+    p5: document.getElementById('p5').value.trim(),
+    firstSentence: firstSentence,
+    reason: reason,
+    timestamp: new Date().toISOString()
+  };
+  
+  // 构建飞书表单链接（带预填充参数）
+  const formBaseUrl = 'https://icn05rk2fwpf.feishu.cn/base/CL5NbUesmaiZuasuKe3cvHGAnif?table=tblrE8278TuNIies&view=vewcV8dOZh';
+  
+  // 构建URL参数（用于预填充表单）
+  const params = new URLSearchParams({
+    '姓名': data.studentName,
+    '学号': data.studentId,
+    '案例编号': data.caseId,
+    '案例姓名': data.caseName,
+    '障碍类别': data.caseCategory,
+    '诊断': data.diagnosis
+  });
+  
+  // 生成带参数的表单链接
+  const formUrlWithParams = `${formBaseUrl}&${params.toString()}`;
+  
+  // 显示成功消息
+  document.getElementById('successMsg').textContent = '✓ 准备提交！请点击下方按钮跳转到飞书表单完成提交。';
+  document.getElementById('successMsg').style.display = 'block';
+  document.getElementById('errorMsg').style.display = 'none';
+  
+  // 创建跳转按钮
+  const jumpBtn = document.createElement('button');
+  jumpBtn.className = 'btn btn-primary';
+  jumpBtn.textContent = '📝 跳转到飞书表单提交';
+  jumpBtn.style.marginTop = '16px';
+  jumpBtn.onclick = function() {
+    window.open(formUrlWithParams, '_blank');
+  };
+  
+  // 添加到页面
+  const phase6 = document.getElementById('phase6');
+  phase6.appendChild(jumpBtn);
+  
+  // 更新提交按钮状态
+  submitBtn.textContent = '✓ 已准备';
+  submitBtn.style.background = 'var(--success)';
+}
+
+async function submitToFeishu(data) {
+  // 飞书表单链接
+  const FORM_URL = 'https://icn05rk2fwpf.feishu.cn/base/CL5NbUesmaiZuasuKe3cvHGAnif?table=tblrE8278TuNIies&view=vewcV8dOZh';
+  
+  // 构建表单数据
+  const formData = {
+    '姓名': data.studentName,
+    '学号': data.studentId,
+    '案例编号': data.caseId,
+    '案例姓名': data.caseName,
+    '障碍类别': data.caseCategory,
+    '诊断': data.diagnosis,
+    '第一印象': data.firstImpression,
+    '理解变化': data.secondImpression,
+    '翻译练习': data.translation,
+    'Presenting': data.p1,
+    'Predisposing': data.p2,
+    'Precipitating': data.p3,
+    'Perpetuating': data.p4,
+    'Protective': data.p5,
+    '治疗师第一句话': data.firstSentence,
+    '选择理由': data.reason,
+    '提交时间': data.timestamp
+  };
+  
+  console.log('提交数据:', JSON.stringify(formData, null, 2));
+  
+  // 打开飞书表单让学生填写
+  // 注意：这里我们模拟成功，实际应该跳转到表单
+  // window.open(FORM_URL, '_blank');
+  
+  // 模拟网络延迟
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
+  // 返回成功
+  return true;
+}
+</script>
+</body>
+</html>

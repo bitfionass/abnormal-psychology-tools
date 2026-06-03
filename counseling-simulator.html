@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>变态心理学 · 模拟咨询训练系统</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#4f46e5;
+  --primary-light:#818cf8;
+  --primary-dark:#3730a3;
+  --success:#10b981;
+  --warning:#f59e0b;
+  --danger:#ef4444;
+  --gray-50:#f8fafc;
+  --gray-100:#f1f5f9;
+  --gray-200:#e2e8f0;
+  --gray-300:#cbd5e1;
+  --gray-400:#94a3b8;
+  --gray-500:#64748b;
+  --gray-600:#475569;
+  --gray-700:#334155;
+  --gray-800:#1e293b;
+  --gray-900:#0f172a;
+}
+html{font-size:15px}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--gray-100);color:var(--gray-800);height:100vh;overflow:hidden}
+
+/* 布局 */
+.app{display:flex;flex-direction:column;height:100vh}
+.header{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.header h1{font-size:1.1em;font-weight:700}
+.header-info{font-size:0.85em;opacity:0.9}
+.main{display:flex;flex:1;overflow:hidden}
+
+/* 左侧面板 */
+.sidebar{width:320px;background:white;border-right:1px solid var(--gray-200);display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-header{padding:16px;border-bottom:1px solid var(--gray-200);background:var(--gray-50)}
+.sidebar-header h2{font-size:1em;color:var(--gray-700);margin-bottom:4px}
+.case-selector{width:100%;padding:8px 12px;border:1px solid var(--gray-300);border-radius:8px;font-size:0.9em;background:white}
+.sidebar-content{flex:1;overflow-y:auto;padding:16px}
+.info-section{margin-bottom:16px}
+.info-title{font-size:0.8em;font-weight:600;color:var(--gray-500);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px}
+.info-card{background:var(--gray-50);border-radius:10px;padding:12px;border:1px solid var(--gray-200)}
+.info-row{display:flex;margin-bottom:6px;font-size:0.9em}
+.info-label{color:var(--gray-500);width:60px;flex-shrink:0}
+.info-value{color:var(--gray-800);font-weight:500}
+.chief-complaint{background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:10px;padding:12px;border-left:4px solid var(--warning);font-style:italic;font-size:0.95em;line-height:1.6}
+
+/* 操作按钮 */
+.actions{padding:16px;border-top:1px solid var(--gray-200);display:flex;flex-direction:column;gap:8px}
+.btn{padding:10px 16px;border-radius:10px;font-size:0.9em;font-weight:600;cursor:pointer;border:none;transition:all 0.2s}
+.btn-primary{background:var(--primary);color:white}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-success{background:var(--success);color:white}
+.btn-success:hover{background:#059669}
+.btn-outline{background:white;color:var(--primary);border:2px solid var(--primary)}
+.btn-outline:hover{background:var(--gray-50)}
+
+/* 聊天区域 */
+.chat-area{flex:1;display:flex;flex-direction:column;background:white}
+.chat-header{padding:12px 20px;border-bottom:1px solid var(--gray-200);background:var(--gray-50);display:flex;align-items:center;justify-content:space-between}
+.chat-title{font-size:0.95em;font-weight:600;color:var(--gray-700)}
+.status-badge{padding:4px 12px;border-radius:20px;font-size:0.75em;font-weight:600}
+.status-active{background:#d1fae5;color:#059669}
+.status-ended{background:#fee2e2;color:#dc2626}
+.chat-messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px}
+.message{display:flex;gap:12px;max-width:85%}
+.message.user{align-self:flex-end;flex-direction:row-reverse}
+.message-avatar{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1em;flex-shrink:0}
+.message-client .message-avatar{background:linear-gradient(135deg,#ec4899,#db2777)}
+.message-user .message-avatar{background:linear-gradient(135deg,var(--primary),var(--primary-dark))}
+.message-content{background:var(--gray-100);border-radius:12px;padding:12px 16px;font-size:0.95em;line-height:1.7}
+.message-user .message-content{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white}
+.message-content p{margin-bottom:8px}
+.message-content p:last-child{margin-bottom:0}
+.message-time{font-size:0.7em;color:var(--gray-400);margin-top:4px}
+
+/* 输入区域 */
+.chat-input{padding:16px 20px;border-top:1px solid var(--gray-200);background:var(--gray-50)}
+.input-row{display:flex;gap:12px}
+.text-input{flex:1;padding:12px 16px;border:2px solid var(--gray-200);border-radius:12px;font-size:0.95em;outline:none;transition:border-color 0.2s}
+.text-input:focus{border-color:var(--primary)}
+.send-btn{padding:12px 24px;background:var(--primary);color:white;border:none;border-radius:12px;font-size:0.95em;font-weight:600;cursor:pointer;transition:all 0.2s}
+.send-btn:hover{background:var(--primary-dark)}
+.send-btn:disabled{background:var(--gray-300);cursor:not-allowed}
+
+/* 诊断面板 */
+.diagnosis-panel{display:none;width:360px;background:white;border-left:1px solid var(--gray-200);flex-direction:column;flex-shrink:0}
+.diagnosis-panel.active{display:flex}
+.diagnosis-header{padding:16px;border-bottom:1px solid var(--gray-200);background:var(--gray-50)}
+.diagnosis-header h2{font-size:1em;color:var(--gray-700)}
+.diagnosis-content{flex:1;overflow-y:auto;padding:16px}
+.diagnosis-form{display:flex;flex-direction:column;gap:12px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-label{font-size:0.85em;font-weight:600;color:var(--gray-600)}
+.form-select,.form-textarea{padding:10px 12px;border:2px solid var(--gray-200);border-radius:8px;font-size:0.9em;outline:none;transition:border-color 0.2s}
+.form-select:focus,.form-textarea:focus{border-color:var(--primary)}
+.form-textarea{min-height:100px;resize:vertical}
+.diagnosis-actions{padding:16px;border-top:1px solid var(--gray-200);display:flex;gap:8px}
+
+/* 评估报告 */
+.report-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:100;align-items:center;justify-content:center}
+.report-overlay.active{display:flex}
+.report-modal{background:white;border-radius:20px;width:90%;max-width:700px;max-height:80vh;overflow-y:auto;box-shadow:0 25px 50px rgba(0,0,0,0.25)}
+.report-header{padding:24px;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between}
+.report-header h2{font-size:1.3em;font-weight:700}
+.close-btn{width:36px;height:36px;border-radius:50%;border:none;background:var(--gray-100);cursor:pointer;font-size:1.2em;display:flex;align-items:center;justify-content:center}
+.report-body{padding:24px}
+.report-section{margin-bottom:20px}
+.report-section-title{font-size:0.9em;font-weight:600;color:var(--gray-500);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px}
+.report-item{padding:12px;background:var(--gray-50);border-radius:10px;margin-bottom:8px;font-size:0.95em}
+.report-score{display:flex;align-items:center;gap:12px;padding:16px;background:linear-gradient(135deg,#d1fae5,#a7f3d0);border-radius:12px;margin-top:16px}
+.score-number{font-size:2em;font-weight:800;color:#059669}
+.score-label{font-size:0.9em;color:#065f46}
+.report-footer{padding:16px 24px;border-top:1px solid var(--gray-200);display:flex;justify-content:flex-end;gap:8px}
+
+/* 快捷问题 */
+.quick-questions{padding:12px 20px;border-top:1px solid var(--gray-200);background:white}
+.quick-title{font-size:0.8em;color:var(--gray-500);margin-bottom:8px}
+.quick-list{display:flex;flex-wrap:wrap;gap:6px}
+.quick-btn{padding:6px 12px;background:var(--gray-100);border:1px solid var(--gray-200);border-radius:16px;font-size:0.8em;cursor:pointer;transition:all 0.2s}
+.quick-btn:hover{background:var(--primary);color:white;border-color:var(--primary)}
+
+@media(max-width:768px){
+  .sidebar{display:none}
+  .diagnosis-panel{position:fixed;top:0;right:0;bottom:0;z-index:50;box-shadow:-10px 0 30px rgba(0,0,0,0.1)}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="header">
+  <h1>变态心理学 · 模拟咨询训练</h1>
+  <div class="header-info">扮演咨询师，通过提问收集信息，做出诊断</div>
+</div>
+
+<div class="main">
+  <!-- 左侧：来访者信息 -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h2>选择案例</h2>
+      <select class="case-selector" id="caseSelector">
+        <option value="case1">案例1：小雨（高三抑郁）</option>
+        <option value="case2">案例2：李队长（PTSD）</option>
+        <option value="case3">案例3：小陈（社交焦虑）</option>
+        <option value="case4">案例4：阿美（边缘型人格）</option>
+        <option value="case5">案例5：小宇（强迫症）</option>
+      </select>
+    </div>
+    <div class="sidebar-content" id="caseInfo">
+      <!-- 动态填充 -->
+    </div>
+    <div class="actions">
+      <button class="btn btn-outline" onclick="showDiagnosis()">📋 提交诊断</button>
+      <button class="btn btn-primary" onclick="endConsultation()">结束咨询</button>
+    </div>
+  </div>
+
+  <!-- 中间：对话区域 -->
+  <div class="chat-area">
+    <div class="chat-header">
+      <span class="chat-title">💬 咨询对话</span>
+      <span class="status-badge status-active" id="statusBadge">进行中</span>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <!-- 动态填充 -->
+    </div>
+    <div class="quick-questions">
+      <div class="quick-title">💡 建议提问（点击直接发送）</div>
+      <div class="quick-list" id="quickQuestions">
+        <!-- 动态填充 -->
+      </div>
+    </div>
+    <div class="chat-input">
+      <div class="input-row">
+        <input type="text" class="text-input" id="userInput" placeholder="输入你的问题..." onkeypress="if(event.key==='Enter')sendMessage()">
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()">发送</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 右侧：诊断面板 -->
+  <div class="diagnosis-panel" id="diagnosisPanel">
+    <div class="diagnosis-header">
+      <h2>📋 诊断与评估</h2>
+    </div>
+    <div class="diagnosis-content">
+      <div class="diagnosis-form">
+        <div class="form-group">
+          <label class="form-label">主要诊断</label>
+          <select class="form-select" id="primaryDiagnosis">
+            <option value="">请选择...</option>
+            <option value="depression">重性抑郁障碍</option>
+            <option value="gad">广泛性焦虑障碍</option>
+            <option value="social_anxiety">社交焦虑障碍</option>
+            <option value="panic">惊恐障碍</option>
+            <option value="ptsd">创伤后应激障碍</option>
+            <option value="ocd">强迫症</option>
+            <option value="bpd">边缘型人格障碍</option>
+            <option value="adhd">注意缺陷/多动障碍</option>
+            <option value="anorexia">神经性厌食</option>
+            <option value="other">其他</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">诊断依据（请列出关键症状）</label>
+          <textarea class="form-textarea" id="diagnosisBasis" placeholder="根据DSM-5标准，列出支持诊断的关键症状..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">鉴别诊断</label>
+          <textarea class="form-textarea" id="differentialDiagnosis" placeholder="列出需要排除的其他诊断及理由..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">治疗建议</label>
+          <textarea class="form-textarea" id="treatmentPlan" placeholder="推荐的治疗方案..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">风险评估</label>
+          <select class="form-select" id="riskLevel">
+            <option value="">请选择...</option>
+            <option value="low">低风险</option>
+            <option value="medium">中等风险</option>
+            <option value="high">高风险（需立即干预）</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="diagnosis-actions">
+      <button class="btn btn-outline" onclick="hideDiagnosis()">取消</button>
+      <button class="btn btn-success" onclick="submitDiagnosis()">提交诊断</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- 评估报告弹窗 -->
+<div class="report-overlay" id="reportOverlay">
+  <div class="report-modal">
+    <div class="report-header">
+      <h2>📊 咨询评估报告</h2>
+      <button class="close-btn" onclick="closeReport()">×</button>
+    </div>
+    <div class="report-body" id="reportBody">
+      <!-- 动态填充 -->
+    </div>
+    <div class="report-footer">
+      <button class="btn btn-outline" onclick="closeReport()">关闭</button>
+      <button class="btn btn-primary" onclick="window.print()">打印报告</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// 案例数据
+const cases = {
+  case1: {
+    name: "小雨",
+    info: {
+      gender: "女",
+      age: "18岁",
+      occupation: "高三学生",
+      marital: "未婚"
+    },
+    complaint: "班主任反映：'最近两个月成绩从班级前10名下滑到倒数，上课走神，不交作业，经常趴在桌上。'",
+    details: {
+      appearance: "衣着整洁，面容疲倦，眼神回避，回答简短",
+      mood: "情绪低落，自我否定，对未来感到无望",
+      thought: "'我什么都做不好'、'活着有什么意义'、'对不起爸妈'",
+      sleep: "睡眠变差，经常半夜醒来想考试的事",
+      appetite: "食欲下降，体重减轻了3公斤",
+      social: "变得沉默，和同桌不说话，午饭一个人吃",
+      family: "母亲性格温和但焦虑，父亲沉默寡言",
+      history: "从小成绩优秀，'乖女儿'，高三给自己定了'必须上985'的目标",
+      suicide: "作文里写'活着到底有什么意义'，需评估被动自杀意念"
+    },
+    diagnosis: "重性抑郁障碍",
+    keywords: {
+      "抑郁|心情|情绪|低落|悲伤|开心": "小雨低下头，沉默了一会儿说：'我也不知道怎么了，就是觉得什么都提不起劲，以前喜欢的事现在也不想做了。'",
+      "睡眠|睡|失眠|半夜|醒来": "'每天晚上都会醒两三次，脑子里全是考试的事，翻来覆去睡不着。'",
+      "食欲|吃|体重|瘦": "'吃不下东西，以前最喜欢吃妈妈做的红烧肉，现在看到就觉得油腻。这两个月瘦了六七斤。'",
+      "兴趣|喜欢|爱好|以前": "'以前喜欢画画、看小说，现在什么都不想做，觉得做这些有什么意义呢。'",
+      "自杀|死|活着|意义|伤害自己": "小雨眼眶红了：'我没想过真的去死，但有时候会想，如果我不在了，爸妈是不是就不用那么辛苦了。'",
+      "压力|考试|985|目标|大学": "'我给自己定了必须上985的目标，第一次月考考了第15名，我觉得完了，考不上了。'",
+      "父母|家人|家庭|妈妈|爸爸": "'爸妈都是农民，他们总说我是全家的希望。我不想让他们失望，但我觉得我做不到。'",
+      "朋友|同学|同桌|社交": "'以前和同桌关系很好，现在不想说话，觉得她也不会理解我。'",
+      "焦虑|紧张|担心": "'每天都很紧张，怕考不好，怕对不起爸妈，越紧张越学不进去。'",
+      "注意力|集中|走神|学习": "'上课根本听不进去，脑子里乱七八糟的，一道题看半天也看不懂。'"
+    },
+    suggestedQuestions: [
+      "你最近睡眠怎么样？",
+      "有没有想过伤害自己？",
+      "你觉得自己最大的压力是什么？",
+      "以前有没有类似的情况？",
+      "你和父母的关系怎么样？"
+    ]
+  },
+  case2: {
+    name: "李队长",
+    info: {
+      gender: "男",
+      age: "35岁",
+      occupation: "消防队中队长",
+      marital: "已婚，有一个7岁女儿"
+    },
+    complaint: "妻子反映：'他变了一个人，回家不说话，喝酒越来越多，孩子叫他他也不理。'",
+    details: {
+      appearance: "外表整洁但面容疲惫，眼神警惕，坐姿紧张",
+      mood: "情感压抑，难以表达内心感受，偶尔眼眶红润",
+      thought: "回避谈论事故细节，存在自责",
+      sleep: "反复做噩梦，梦到战友在火里喊他",
+      appetite: "无明显变化",
+      social: "回避与事故相关的一切，社交退缩",
+      family: "父亲也是军人，从小教育'男人不能哭'",
+      history: "三个月前带队处置化工厂爆炸，战友牺牲",
+      substance: "每天晚上喝半斤白酒，说是'帮助睡眠'",
+      suicide: "无自杀意念，但存在自毁行为（饮酒）"
+    },
+    diagnosis: "创伤后应激障碍",
+    keywords: {
+      "创伤|事故|爆炸|战友|牺牲": "李队长沉默了很久，声音低沉：'小刘就在我旁边三米处，二次爆炸的时候...我被掀飞了，等我爬起来，他已经...' ",
+      "噩梦|梦|睡觉|失眠": "'每天晚上都梦到他，在火里喊队长救我，我却动弹不得。半夜惊醒，一身冷汗。'",
+      "喝酒|酒|酒精": "'睡不着就喝点酒，能好一些。'（实际每天半瓶白酒）",
+      "回避|不想|不敢|消防": "'我不想看火灾新闻，不想经过那条路，甚至不想穿消防服了。我跟领导申请调到后勤。'",
+      "脾气|发火|孩子|女儿": "'女儿打翻水杯，我吼了她...以前从来没这样过。事后很自责，但下次还是控制不住。'",
+      "小刘|战友|追悼会": "（眼眶红了）'追悼会上我安慰了小刘的家人，我说会照顾他们...但我自己呢？'",
+      "情绪|感受|难过": "'我...没事。'（沉默）'男人嘛，扛得住。'",
+      "闪回|画面|想起来": "'有时候突然就会闪过当时的画面，火光、爆炸声、他倒下的样子...' ",
+      "睡眠|检查|门锁": "不适用此案例",
+      "焦虑|紧张": "'听到突然的响声会吓一跳，心跳加速。'"
+    },
+    suggestedQuestions: [
+      "那天发生了什么？",
+      "你现在睡眠怎么样？",
+      "有没有喝酒的习惯？",
+      "你还愿意穿消防服吗？",
+      "你现在能正常工作吗？"
+    ]
+  },
+  case3: {
+    name: "小陈",
+    info: {
+      gender: "男",
+      age: "20岁",
+      occupation: "大二计算机专业",
+      marital: "未婚"
+    },
+    complaint: "'我不敢在人多的地方说话，一说话就脸红、手抖，感觉自己像个傻子。'",
+    details: {
+      appearance: "进门时低着头，避免眼神接触，说话声音小",
+      mood: "焦虑明显，面部潮红，手心出汗",
+      thought: "'所有人都在笑我'、'我怎么这么废物'",
+      sleep: "如有汇报，提前一周失眠",
+      appetite: "无明显变化",
+      social: "回避食堂、社团活动、课堂发言",
+      family: "父亲期望很高，母亲强势，从小替他做决定",
+      history: "高中内向但正常，大学第一次汇报后开始严重",
+      suicide: "无"
+    },
+    diagnosis: "社交焦虑障碍",
+    keywords: {
+      "紧张|脸红|手抖|出汗": "'一站起来发言就脸红、手抖，大脑一片空白。'",
+      "汇报|发言|课堂|presentation": "'第一次小组汇报，站在讲台上突然大脑空白，同学在下面窃窃私语。从那以后就逃避所有发言。'",
+      "食堂|人多|社交": "'食堂人太多，总觉得别人在看我。现在都叫外卖在宿舍吃。'",
+      "别人|看法|评价|笑": "'所有人都在笑我，他们肯定觉得我很奇怪。'",
+      "回避|逃避|不敢|选课": "'选课专门挑不用做presentation的课。小组作业主动说写报告，不用上台。'",
+      "父亲|母亲|家庭|期望": "'爸爸话很少，但期望很高。考了第二名会说怎么不是第一名。妈妈从小替我做决定。'",
+      "朋友|同学|室友": "'室友说就是太内向了，多锻炼就好了。但我知道不是这样。'",
+      "焦虑|担心|万一": "'万一出丑怎么办？万一忘词怎么办？万一被人笑话怎么办？'",
+      "内向|性格": "'从小性格内向，但高中用微信交流没问题，只是不爱在课堂上发言。'"
+    },
+    suggestedQuestions: [
+      "你在什么情况下最紧张？",
+      "别人怎么看你？",
+      "你尝试过什么方法克服？",
+      "你父亲怎么评价你？",
+      "这种情况什么时候开始的？"
+    ]
+  },
+  case4: {
+    name: "阿美",
+    info: {
+      gender: "女",
+      age: "21岁",
+      occupation: "大三学生",
+      marital: "未婚"
+    },
+    complaint: "辅导员转介。室友发现她手臂上有十几道新旧不一的划痕。",
+    details: {
+      appearance: "外表时尚，情绪波动大，时而热情时而冷漠",
+      mood: "情绪不稳定，易激惹，有强烈的被抛弃恐惧",
+      thought: "'你们都不理解我'、'我又没病'",
+      sleep: "无明显规律",
+      appetite: "无明显变化",
+      social: "人际关系呈理想化-贬低交替模式",
+      family: "父母6岁离婚，母亲情绪不稳定",
+      history: "从13岁开始割手腕，紧张时会割",
+      suicide: "割腕是情绪调节，非自杀（'割的时候不觉得疼，反而觉得心里没那么堵了'）"
+    },
+    diagnosis: "边缘型人格障碍",
+    keywords: {
+      "割|划|手腕|自伤|伤自己": "'割的时候不觉得疼，反而觉得心里没那么堵了。'（手臂有十几道新旧不一的划痕）",
+      "朋友|友谊|关系|分手": "'刚开始觉得对方简直是灵魂伴侣，几周后因为一点小事就暴怒，觉得你根本不把我当朋友。'",
+      "男朋友|恋爱|男友": "'大二谈了一个男朋友，刚开始觉得终于有人真的爱我了。后来他忙了几天没回消息，我就疯狂打电话、发消息，甚至威胁你不回我我就去死。'",
+      "抛弃|离开|不要我": "（情绪激动）'你们是不是都要离开我？'",
+      "父母|离婚|家庭|妈妈": "'爸妈在我6岁时离婚了。妈妈情绪不稳定，好的时候对我很好，不好的时候会骂我你怎么跟你爸一样没用。'",
+      "情绪|控制不住|暴怒": "'好的时候特别好，不好的时候吓死人。我知道这样不好，但控制不住。'",
+      "孤独|空虚|一个人": "'我也不知道，就是有时候觉得特别空虚，好像心里有个洞。'",
+      "我又没病|心理咨询|看医生": "'我又没病，就是心情不好。'（拒绝去精神科评估）"
+    },
+    suggestedQuestions: [
+      "这些划痕是怎么来的？",
+      "你和朋友的关系怎么样？",
+      "你小时候的家庭环境？",
+      "你害怕什么？",
+      "你情绪波动大吗？"
+    ]
+  },
+  case5: {
+    name: "小宇",
+    info: {
+      gender: "男",
+      age: "14岁",
+      occupation: "初二学生",
+      marital: "未婚"
+    },
+    complaint: "母亲反映：'他洗手洗到手都裂了，做作业一个字写不好就擦掉重写，一份作业能写三四个小时。'",
+    details: {
+      appearance: "衣着整洁，双手皮肤粗糙有裂口，指甲剪得很短",
+      mood: "焦虑明显，对自己的行为感到困扰",
+      thought: "'外面的东西很脏'、'万一没锁呢'、'字不好看'",
+      sleep: "睡前要检查门锁，最多一晚检查12次",
+      appetite: "无明显变化",
+      social: "不让同学来家里玩，'怕他们看到我洗手的样子'",
+      family: "父亲是工程师，做事严谨，要求高；母亲温和但容易焦虑",
+      history: "从小做事认真，初一开始'认真'变成'控制不住'",
+      suicide: "无"
+    },
+    diagnosis: "强迫症",
+    keywords: {
+      "洗手|洗|脏|干净": "'外面的东西很脏，从外面回家必须洗手。'（展示双手，皮肤粗糙有裂口）'要按固定顺序洗，手心、手背、指缝、手腕，每个步骤7遍。如果数错了，必须从头来。'",
+      "作业|写字|擦|重写": "'写一个字如果觉得不好看，就擦掉重写。一份500字的作文，能写3-4个小时。'",
+      "门锁|检查|锁|万一": "'睡前要检查门锁，已经确认锁好了，但脑子里有个声音说万一没锁呢？最多一晚检查12次。'",
+      "控制|停不下来|没必要": "'我知道这些行为没必要，也觉得很烦，但如果不做，就会特别焦虑，感觉要出大事。'",
+      "爸爸|父亲|家庭|要求": "'爸爸是工程师，做事非常严谨，对我要求很高。'",
+      "成绩|学习|考试": "'成绩一直很好，但最近因为做作业太慢，开始跟不上进度。考试经常答不完题。'",
+      "同学|朋友|社交": "'不让同学来家里玩，怕他们看到我洗手的样子。'",
+      "焦虑|紧张|万一": "'如果不做那些仪式，就会特别焦虑，感觉要出大事。'"
+    },
+    suggestedQuestions: [
+      "你洗手有什么特别的顺序吗？",
+      "如果不洗手会怎样？",
+      "你做作业要花多长时间？",
+      "你晚上睡觉前做什么？",
+      "你爸爸对你要求严格吗？"
+    ]
+  }
+};
+
+let currentCase = "case1";
+let currentData = cases[currentCase];
+let isConsultationActive = true;
+let questionCount = 0;
+let collectedInfo = new Set();
+
+// 初始化
+function init() {
+  loadCase(currentCase);
+  document.getElementById('caseSelector').addEventListener('change', function() {
+    currentCase = this.value;
+    currentData = cases[currentCase];
+    loadCase(currentCase);
+  });
+}
+
+// 加载案例
+function loadCase(caseId) {
+  const data = cases[caseId];
+  currentData = data;
+  questionCount = 0;
+  collectedInfo.clear();
+  isConsultationActive = true;
+  document.getElementById('statusBadge').className = 'status-badge status-active';
+  document.getElementById('statusBadge').textContent = '进行中';
+  
+  // 显示来访者信息
+  const infoHtml = `
+    <div class="info-section">
+      <div class="info-title">基本信息</div>
+      <div class="info-card">
+        <div class="info-row"><span class="info-label">姓名</span><span class="info-value">${data.name}</span></div>
+        <div class="info-row"><span class="info-label">性别</span><span class="info-value">${data.info.gender}</span></div>
+        <div class="info-row"><span class="info-label">年龄</span><span class="info-value">${data.info.age}</span></div>
+        <div class="info-row"><span class="info-label">职业</span><span class="info-value">${data.info.occupation}</span></div>
+        <div class="info-row"><span class="info-label">婚姻</span><span class="info-value">${data.info.marital}</span></div>
+      </div>
+    </div>
+    <div class="info-section">
+      <div class="info-title">主诉</div>
+      <div class="chief-complaint">${data.complaint}</div>
+    </div>
+    <div class="info-section">
+      <div class="info-title">咨询进度</div>
+      <div class="info-card">
+        <div class="info-row"><span class="info-label">提问数</span><span class="info-value" id="questionCount">0</span></div>
+        <div class="info-row"><span class="info-label">收集信息</span><span class="info-value" id="infoCollected">0/8</span></div>
+      </div>
+    </div>
+  `;
+  document.getElementById('caseInfo').innerHTML = infoHtml;
+  
+  // 初始化对话
+  const chatHtml = `
+    <div class="message message-client">
+      <div class="message-avatar">👩</div>
+      <div class="message-content">
+        <p>你好，我是${data.name}。</p>
+        <p>${data.complaint}</p>
+      </div>
+    </div>
+  `;
+  document.getElementById('chatMessages').innerHTML = chatHtml;
+  
+  // 快捷问题
+  loadQuickQuestions();
+  
+  // 重置诊断表单
+  document.getElementById('primaryDiagnosis').value = '';
+  document.getElementById('diagnosisBasis').value = '';
+  document.getElementById('differentialDiagnosis').value = '';
+  document.getElementById('treatmentPlan').value = '';
+  document.getElementById('riskLevel').value = '';
+}
+
+// 加载快捷问题
+function loadQuickQuestions() {
+  const questions = currentData.suggestedQuestions;
+  const html = questions.map(q => `<button class="quick-btn" onclick="sendQuickQuestion('${q}')">${q}</button>`).join('');
+  document.getElementById('quickQuestions').innerHTML = html;
+}
+
+// 发送快捷问题
+function sendQuickQuestion(question) {
+  document.getElementById('userInput').value = question;
+  sendMessage();
+}
+
+// 发送消息
+function sendMessage() {
+  if (!isConsultationActive) return;
+  
+  const input = document.getElementById('userInput');
+  const message = input.value.trim();
+  if (!message) return;
+  
+  questionCount++;
+  document.getElementById('questionCount').textContent = questionCount;
+  
+  // 添加用户消息
+  addMessage(message, 'user');
+  input.value = '';
+  
+  // 生成回复
+  setTimeout(() => {
+    const response = generateResponse(message);
+    addMessage(response, 'client');
+    updateProgress();
+  }, 500);
+}
+
+// 添加消息
+function addMessage(content, type) {
+  const messagesDiv = document.getElementById('chatMessages');
+  const avatar = type === 'user' ? '👨‍⚕️' : '👩';
+  const messageClass = type === 'user' ? 'message-user' : 'message-client';
+  
+  const html = `
+    <div class="message ${messageClass}">
+      <div class="message-avatar">${avatar}</div>
+      <div class="message-content">${content}</div>
+    </div>
+  `;
+  messagesDiv.innerHTML += html;
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+// 生成回复
+function generateResponse(question) {
+  const q = question.toLowerCase();
+  const keywords = currentData.keywords;
+  
+  for (const [pattern, response] of Object.entries(keywords)) {
+    const patterns = pattern.split('|');
+    if (patterns.some(p => q.includes(p))) {
+      // 记录收集到的信息
+      const category = patterns[0];
+      collectedInfo.add(category);
+      return `<p>${response}</p>`;
+    }
+  }
+  
+  // 默认回复
+  const defaultResponses = [
+    "（沉默了一会儿）嗯...你能再说详细一点吗？",
+    "我不太明白你的意思，你能换个方式问吗？",
+    "（低头）这个问题...我不太想回答。",
+    "（思考）让我想想...",
+    "你是想问哪方面呢？"
+  ];
+  return `<p>${defaultResponses[Math.floor(Math.random() * defaultResponses.length)]}</p>`;
+}
+
+// 更新进度
+function updateProgress() {
+  const total = Object.keys(currentData.keywords).length;
+  const collected = collectedInfo.size;
+  document.getElementById('infoCollected').textContent = `${collected}/${total}`;
+  
+  // 更新快捷问题（移除已问过的）
+  const remainingQuestions = currentData.suggestedQuestions.filter(q => {
+    const qLower = q.toLowerCase();
+    return !Array.from(collectedInfo).some(keyword => qLower.includes(keyword));
+  });
+  
+  if (remainingQuestions.length > 0) {
+    const html = remainingQuestions.map(q => `<button class="quick-btn" onclick="sendQuickQuestion('${q}')">${q}</button>`).join('');
+    document.getElementById('quickQuestions').innerHTML = html;
+  }
+}
+
+// 结束咨询
+function endConsultation() {
+  isConsultationActive = false;
+  document.getElementById('statusBadge').className = 'status-badge status-ended';
+  document.getElementById('statusBadge').textContent = '已结束';
+  document.getElementById('sendBtn').disabled = true;
+  
+  addMessage('<p>咨询时间到了。感谢你的信任，我们会根据今天的情况给你一些建议。</p>', 'user');
+}
+
+// 显示诊断面板
+function showDiagnosis() {
+  document.getElementById('diagnosisPanel').classList.add('active');
+}
+
+// 隐藏诊断面板
+function hideDiagnosis() {
+  document.getElementById('diagnosisPanel').classList.remove('active');
+}
+
+// 提交诊断
+function submitDiagnosis() {
+  const diagnosis = document.getElementById('primaryDiagnosis').value;
+  const basis = document.getElementById('diagnosisBasis').value;
+  const differential = document.getElementById('differentialDiagnosis').value;
+  const treatment = document.getElementById('treatmentPlan').value;
+  const risk = document.getElementById('riskLevel').value;
+  
+  if (!diagnosis) {
+    alert('请选择主要诊断');
+    return;
+  }
+  
+  // 计算得分
+  let score = 0;
+  const correctDiagnosis = currentData.diagnosis;
+  const diagnosisMap = {
+    'depression': '重性抑郁障碍',
+    'gad': '广泛性焦虑障碍',
+    'social_anxiety': '社交焦虑障碍',
+    'panic': '惊恐障碍',
+    'ptsd': '创伤后应激障碍',
+    'ocd': '强迫症',
+    'bpd': '边缘型人格障碍',
+    'adhd': '注意缺陷/多动障碍',
+    'anorexia': '神经性厌食'
+  };
+  
+  const selectedDiagnosis = diagnosisMap[diagnosis] || diagnosis;
+  const isCorrect = correctDiagnosis.includes(selectedDiagnosis) || selectedDiagnosis.includes(correctDiagnosis);
+  
+  if (isCorrect) score += 40;
+  if (basis.length > 50) score += 20;
+  if (differential.length > 30) score += 20;
+  if (treatment.length > 30) score += 10;
+  if (risk) score += 10;
+  
+  // 生成报告
+  showReport(selectedDiagnosis, isCorrect, score, basis, differential, treatment, risk);
+}
+
+// 显示报告
+function showReport(diagnosis, isCorrect, score, basis, differential, treatment, risk) {
+  const riskLabels = { low: '低风险', medium: '中等风险', high: '高风险（需立即干预）' };
+  
+  const html = `
+    <div class="report-section">
+      <div class="report-section-title">案例信息</div>
+      <div class="report-item"><strong>来访者：</strong>${currentData.name}（${currentData.info.gender}，${currentData.info.age}）</div>
+      <div class="report-item"><strong>主诉：</strong>${currentData.complaint}</div>
+    </div>
+    <div class="report-section">
+      <div class="report-section-title">咨询过程</div>
+      <div class="report-item"><strong>提问数量：</strong>${questionCount}个问题</div>
+      <div class="report-item"><strong>信息收集：</strong>收集了${collectedInfo.size}个关键信息维度</div>
+    </div>
+    <div class="report-section">
+      <div class="report-section-title">诊断评估</div>
+      <div class="report-item"><strong>你的诊断：</strong>${diagnosis} ${isCorrect ? '✓' : '✗'}</div>
+      <div class="report-item"><strong>正确诊断：</strong>${currentData.diagnosis}</div>
+      <div class="report-item"><strong>诊断依据：</strong>${basis || '未填写'}</div>
+      <div class="report-item"><strong>鉴别诊断：</strong>${differential || '未填写'}</div>
+      <div class="report-item"><strong>治疗建议：</strong>${treatment || '未填写'}</div>
+      <div class="report-item"><strong>风险评估：</strong>${riskLabels[risk] || '未评估'}</div>
+    </div>
+    <div class="report-score">
+      <div class="score-number">${score}</div>
+      <div class="score-label">综合得分（满分100）</div>
+    </div>
+  `;
+  
+  document.getElementById('reportBody').innerHTML = html;
+  document.getElementById('reportOverlay').classList.add('active');
+}
+
+// 关闭报告
+function closeReport() {
+  document.getElementById('reportOverlay').classList.remove('active');
+}
+
+// 初始化
+init();
+</script>
+</body>
+</html>

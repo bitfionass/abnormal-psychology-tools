@@ -1,0 +1,673 @@
+     1|<!DOCTYPE html>
+     2|<html lang="zh-CN">
+     3|<head>
+     4|<meta charset="UTF-8">
+     5|<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
+     6|<meta name="apple-mobile-web-app-capable" content="yes">
+     7|<title>变态心理学案例库</title>
+     8|<style>
+     9|*{margin:0;padding:0;box-sizing:border-box}
+    10|html{font-size:15px;-webkit-text-size-adjust:100%}
+    11|body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Helvetica Neue",sans-serif;line-height:1.8;color:#2c3e50;background:#f0f4f8;min-height:100vh;padding:20px;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))}
+    12|
+    13|.container{max-width:960px;margin:0 auto}
+    14|
+    15|/* 头部 */
+    16|header{text-align:center;color:white;margin-bottom:24px;padding:40px 30px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);border-radius:24px;box-shadow:0 20px 60px rgba(102,126,234,0.3)}
+    17|header h1{font-size:2.2em;margin-bottom:8px;font-weight:800;letter-spacing:-0.02em}
+    18|.subtitle{font-size:1em;opacity:0.9;margin-bottom:20px}
+    19|.stats{display:flex;justify-content:center;gap:40px;margin:20px 0}
+    20|.stat{text-align:center}
+    21|.stat-number{font-size:2.5em;font-weight:800;display:block}
+    22|.stat-label{font-size:0.85em;opacity:0.8}
+    23|
+    24|/* 搜索 */
+    25|.search-box{margin:20px auto;max-width:600px}
+    26|.search-box input{width:100%;padding:16px 24px;font-size:1em;border:none;border-radius:16px;outline:none;box-shadow:0 10px 40px rgba(0,0,0,0.15);background:white;transition:all 0.3s}
+    27|.search-box input:focus{box-shadow:0 10px 40px rgba(102,126,234,0.3)}
+    28|
+    29|/* 筛选 */
+    30|.filter-bar{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:24px}
+    31|.filter-btn{padding:10px 20px;background:white;color:#667eea;border:2px solid #e0e7ff;border-radius:12px;cursor:pointer;font-size:0.9em;font-weight:600;transition:all 0.3s;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
+    32|.filter-btn:hover,.filter-btn.active{background:linear-gradient(135deg,#667eea,#764ba2);color:white;border-color:transparent;box-shadow:0 4px 15px rgba(102,126,234,0.3)}
+    33|
+    34|/* 案例卡片 */
+    35|.case-card{background:white;border-radius:20px;margin-bottom:20px;box-shadow:0 4px 20px rgba(0,0,0,0.08);overflow:hidden;transition:all 0.3s;border:1px solid #e8ecf1}
+    36|.case-card:hover{box-shadow:0 8px 30px rgba(0,0,0,0.12);transform:translateY(-2px)}
+    37|.case-header{padding:20px 24px;cursor:pointer;display:flex;align-items:center;gap:16px;transition:background 0.2s}
+    38|.case-header:hover{background:#f8fafc}
+    39|.case-avatar{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.6em;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+    40|.case-meta{flex:1;min-width:0}
+    41|.case-name{font-size:1.2em;font-weight:700;color:#1e293b;margin-bottom:4px}
+    42|.case-info{font-size:0.9em;color:#64748b}
+    43|.case-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    44|.tag{padding:4px 12px;border-radius:8px;font-size:0.75em;font-weight:600}
+    45|.tag-category{background:#ede9fe;color:#7c3aed}
+    46|.tag-severity{background:#fef3c7;color:#d97706}
+    47|.tag-age{background:#d1fae5;color:#059669}
+    48|.case-expand{font-size:1.2em;color:#94a3b8;transition:transform 0.3s;flex-shrink:0}
+    49|.case-card.expanded .case-expand{transform:rotate(180deg)}
+    50|
+    51|/* 案例内容 */
+    52|.case-body{display:none;padding:0 24px 24px}
+    53|.case-card.expanded .case-body{display:block;animation:fadeIn 0.3s ease}
+    54|@keyframes fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+    55|
+    56|/* 章节 */
+    57|.section{margin-bottom:20px}
+    58|.section-title{font-size:1em;font-weight:700;color:#1e293b;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #e2e8f0;display:flex;align-items:center;gap:10px}
+    59|.section-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.9em;flex-shrink:0}
+    60|.section-content{font-size:0.95em;line-height:1.9;color:#475569}
+    61|.section-content p{margin-bottom:10px}
+    62|
+    63|/* 高亮框 */
+    64|.highlight-box{background:#f8fafc;border-radius:12px;padding:16px 20px;margin:12px 0;border-left:4px solid #667eea}
+    65|.highlight-box.warning{border-left-color:#ef4444;background:#fef2f2}
+    66|.highlight-box.info{border-left-color:#10b981;background:#ecfdf5}
+    67|.highlight-box p{margin-bottom:6px;font-size:0.92em}
+    68|
+    69|/* 诊断卡片 */
+    70|.diagnosis-card{background:linear-gradient(135deg,#f0f4ff,#e8ecf1);border-radius:16px;padding:20px;margin-top:16px}
+    71|.diagnosis-title{font-weight:700;color:#1e293b;margin-bottom:12px;font-size:1em}
+    72|.criteria-list{list-style:none;padding:0}
+    73|.criteria-list li{padding:8px 0;padding-left:28px;position:relative;font-size:0.92em;border-bottom:1px solid #e2e8f0}
+    74|.criteria-list li:last-child{border-bottom:none}
+    75|.criteria-list li::before{content:"✓";position:absolute;left:0;color:#10b981;font-weight:700;font-size:1.1em}
+    76|.criteria-list li.unmet::before{content:"✗";color:#ef4444}
+    77|.criteria-list li.unclear::before{content:"?";color:#f59e0b}
+    78|
+    79|/* 治疗建议 */
+    80|.treatment-box{background:white;border-radius:12px;padding:16px 20px;margin-top:12px;border:1px solid #e2e8f0}
+    81|.treatment-title{font-weight:600;color:#1e293b;margin-bottom:8px;font-size:0.95em}
+    82|.treatment-list{list-style:none;padding:0}
+    83|.treatment-list li{padding:6px 0;padding-left:24px;position:relative;font-size:0.9em;color:#475569}
+    84|.treatment-list li::before{content:"→";position:absolute;left:0;color:#667eea;font-weight:700}
+    85|
+    86|/* 底部导航 */
+    87|.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);padding:12px 20px;display:flex;justify-content:center;gap:12px;z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,0.1)}
+    88|.bottom-btn{padding:10px 24px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:12px;font-size:0.9em;font-weight:600;cursor:pointer;transition:all 0.3s;box-shadow:0 4px 15px rgba(102,126,234,0.3)}
+    89|.bottom-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(102,126,234,0.4)}
+    90|
+    91|.back-top{position:fixed;bottom:80px;right:20px;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;font-size:1.4em;cursor:pointer;display:none;z-index:99;box-shadow:0 4px 15px rgba(102,126,234,0.3);transition:all 0.3s}
+    92|.back-top:hover{transform:scale(1.1)}
+    93|
+    94|#content{padding-bottom:80px}
+    95|
+    96|.hidden{display:none!important}
+    97|
+    98|@media(max-width:600px){
+    99|  body{padding:12px}
+   100|  header{padding:24px 16px}
+   101|  header h1{font-size:1.6em}
+   102|  .stats{gap:20px}
+   103|  .stat-number{font-size:1.8em}
+   104|  .filter-bar{gap:6px}
+   105|  .filter-btn{padding:8px 14px;font-size:0.8em}
+   106|  .case-header{padding:16px}
+   107|  .case-body{padding:0 16px 16px}
+   108|}
+   109|</style>
+   110|</head>
+   111|<body>
+   112|<div class="container">
+   113|<header>
+   114|<h1>变态心理学案例库</h1>
+   115|<p class="subtitle">基于DSM-5标准 · 临床教学与实践</p>
+   116|<div class="stats">
+   117|<div class="stat"><span class="stat-number">60</span><span class="stat-label">临床案例</span></div>
+   118|<div class="stat"><span class="stat-number">17</span><span class="stat-label">障碍类别</span></div>
+   119|</div>
+   120|<div class="search-box"><input type="text" id="searchInput" placeholder="搜索案例名称、障碍类型、关键词..." autocomplete="off"></div>
+   121|</header>
+   122|
+   123|<div class="filter-bar" id="filterBar">
+   124|<button class="filter-btn active" data-filter="all">全部</button>
+   125|<button class="filter-btn" data-filter="抑郁">抑郁/双相</button>
+   126|<button class="filter-btn" data-filter="焦虑">焦虑障碍</button>
+   127|<button class="filter-btn" data-filter="强迫">强迫及相关</button>
+   128|<button class="filter-btn" data-filter="创伤">创伤应激</button>
+   129|<button class="filter-btn" data-filter="分离">分离障碍</button>
+   130|<button class="filter-btn" data-filter="躯体">躯体症状</button>
+   131|<button class="filter-btn" data-filter="人格">人格障碍</button>
+   132|<button class="filter-btn" data-filter="神经发育">神经发育</button>
+   133|<button class="filter-btn" data-filter="进食">进食障碍</button>
+   134|<button class="filter-btn" data-filter="睡眠">睡眠障碍</button>
+   135|<button class="filter-btn" data-filter="物质">物质相关</button>
+   136|<button class="filter-btn" data-filter="冲动">冲动控制</button>
+   137|<button class="filter-btn" data-filter="认知">神经认知</button>
+   138|<button class="filter-btn" data-filter="性功能">性功能</button>
+   139|<button class="filter-btn" data-filter="性别">性别烦躁</button>
+   140|<button class="filter-btn" data-filter="性欲倒错">性欲倒错</button>
+   141|</div>
+   142|
+   143|<div id="content">
+   144|
+   145|<!-- 案例1：小雨 - 重性抑郁障碍 -->
+   146|<div class="case-card" data-category="抑郁" data-keywords="高三 学业压力 无望感 自我否定 睡眠差 食欲下降">
+   147|<div class="case-header" onclick="this.parentElement.classList.toggle('expanded')">
+   148|<div class="case-avatar" style="background:linear-gradient(135deg,#667eea,#764ba2)">🌧️</div>
+   149|<div class="case-meta">
+   150|<div class="case-name">小雨</div>
+   151|<div class="case-info">女 · 18岁 · 高三学生</div>
+   152|<div class="case-tags">
+   153|<span class="tag tag-category">抑郁障碍</span>
+   154|<span class="tag tag-severity">中重度</span>
+   155|<span class="tag tag-age">青少年</span>
+   156|</div>
+   157|</div>
+   158|<div class="case-expand">▾</div>
+   159|</div>
+   160|<div class="case-body">
+   161|<div class="section">
+   162|<div class="section-title"><span class="section-icon" style="background:#ede9fe;color:#7c3aed">💬</span>主诉</div>
+   163|<div class="section-content">
+   164|<p>班主任反映："最近两个月成绩从班级前10名下滑到倒数，上课走神，不交作业，经常趴在桌上。"</p>
+   165|</div>
+   166|</div>
+   167|
+   168|<div class="section">
+   169|<div class="section-title"><span class="section-icon" style="background:#dbeafe;color:#2563eb">📖</span>现病史</div>
+   170|<div class="section-content">
+   171|<p>小雨从小成绩优秀，是家里的"乖女儿"。父母都是农民，文化程度不高，反复跟她说"你考上大学就是全家的希望"。高一高二成绩一直名列前茅。</p>
+   172|<p>高三开学后，小雨给自己定了"必须上985"的目标。第一次月考排名班级第15名，她大哭了一场，觉得"完了，考不上了"。之后开始每天学到凌晨1点，但效率越来越低，上课总是走神。</p>
+   173|<p>最近两个月，她变得越来越沉默。以前和同桌有说有笑，现在下课也不说话，午饭经常一个人吃。同桌问她怎么了，她说"没事，就是有点累"。</p>
+   174|<p>上周班主任发现她作文里写了一句<strong>"活着到底有什么意义"</strong>，把她叫到办公室谈话。小雨当时哭了，说<strong>"我觉得我什么都做不好，对不起爸妈"</strong>。</p>
+   175|</div>
+   176|</div>
+   177|
+   178|<div class="section">
+   179|<div class="section-title"><span class="section-icon" style="background:#fef3c7;color:#d97706">📋</span>既往史与个人史</div>
+   180|<div class="highlight-box">
+   181|<p><strong>既往病史：</strong>无精神疾病史，无重大躯体疾病</p>
+   182|<p><strong>个人史：</strong>独生女，从小乖巧懂事，成绩优秀，人际关系良好</p>
+   183|<p><strong>家族史：</strong>母亲性格温和但焦虑，父亲沉默寡言，无明确精神疾病家族史</p>
+   184|<p><strong>近期变化：</strong>睡眠变差（半夜醒来想考试的事）、食欲下降、体重减轻3公斤</p>
+   185|</div>
+   186|</div>
+   187|
+   188|<div class="section">
+   189|<div class="section-title"><span class="section-icon" style="background:#d1fae5;color:#059669">🔍</span>精神检查</div>
+   190|<div class="section-content">
+   191|<p><strong>一般表现：</strong>衣着整洁，面容疲倦，眼神回避，回答简短</p>
+   192|<p><strong>情绪状态：</strong>情绪低落，自我否定，对未来感到无望</p>
+   193|<p><strong>思维内容：</strong>"我什么都做不好"、"活着有什么意义"、"对不起爸妈"</p>
+   194|<p><strong>自杀风险：</strong>需进一步评估（"活着有什么意义"可能提示被动自杀意念）</p>
+   195|</div>
+   196|</div>
+   197|
+   198|<div class="section">
+   199|<div class="section-title"><span class="section-icon" style="background:#ede9fe;color:#7c3aed">📊</span>DSM-5诊断标准对照</div>
+   200|<div class="diagnosis-card">
+   201|<div class="diagnosis-title">重性抑郁障碍（F32.1）</div>
+   202|<ul class="criteria-list">
+   203|<li>在2周内出现5项以上症状，其中至少1项是心境抑郁或兴趣丧失</li>
+   204|<li>几乎每天大部分时间心境抑郁（"沉默"、"趴着"）</li>
+   205|<li>兴趣或愉悦感显著减退（"和同桌不说话了"、"午饭一个人吃"）</li>
+   206|<li>体重减轻（3公斤）或食欲减退</li>
+   207|<li>睡眠障碍（半夜醒来）</li>
+   208|<li>疲劳或精力不足（"就是有点累"）</li>
+   209|<li>自我评价过低或过度内疚（"什么都做不好"、"对不起爸妈"）</li>
+   210|<li>反复想到死亡（"活着有什么意义"）</li>
+   211|</ul>
+   212|</div>
+   213|</div>
+   214|
+   215|<div class="section">
+   216|<div class="section-title"><span class="section-icon" style="background:#fee2e2;color:#dc2626">⚖️</span>鉴别诊断</div>
+   217|<div class="highlight-box warning">
+   218|<p><strong>1. 适应障碍：</strong>症状持续时间和严重程度超出一般适应反应范围</p>
+   219|<p><strong>2. 广泛性焦虑障碍：</strong>核心症状是情绪低落而非焦虑，焦虑是继发的</p>
+   220|<p><strong>3. 双相障碍：</strong>需排除躁狂/轻躁狂发作史</p>
+   221|</div>
+   222|</div>
+   223|
+   224|<div class="section">
+   225|<div class="section-title"><span class="section-icon" style="background:#e0e7ff;color:#4f46e5">💊</span>治疗建议</div>
+   226|<div class="treatment-box">
+   227|<ul class="treatment-list">
+   228|<li><strong>药物治疗：</strong>SSRI类抗抑郁药（如舍曲林、氟西汀）</li>
+   229|<li><strong>心理治疗：</strong>认知行为治疗（CBT）——识别和挑战负性自动思维</li>
+   230|<li><strong>危机干预：</strong>评估自杀风险，制定安全计划</li>
+   231|<li><strong>家庭干预：</strong>与父母沟通，降低期望压力</li>
+   232|<li><strong>学校支持：</strong>与班主任协调，提供学业支持</li>
+   233|</ul>
+   234|</div>
+   235|</div>
+   236|</div>
+   237|</div>
+   238|
+   239|<!-- 案例2：李队长 - PTSD -->
+   240|<div class="case-card" data-category="创伤" data-keywords="消防员 PTSD 创伤后应激 噩梦 回避 酒精 闪回">
+   241|<div class="case-header" onclick="this.parentElement.classList.toggle('expanded')">
+   242|<div class="case-avatar" style="background:linear-gradient(135deg,#ef4444,#dc2626)">🚒</div>
+   243|<div class="case-meta">
+   244|<div class="case-name">李队长</div>
+   245|<div class="case-info">男 · 35岁 · 消防队中队长</div>
+   246|<div class="case-tags">
+   247|<span class="tag tag-category">创伤及应激相关</span>
+   248|<span class="tag tag-severity">重度</span>
+   249|<span class="tag tag-age">成年</span>
+   250|</div>
+   251|</div>
+   252|<div class="case-expand">▾</div>
+   253|</div>
+   254|<div class="case-body">
+   255|<div class="section">
+   256|<div class="section-title"><span class="section-icon" style="background:#ede9fe;color:#7c3aed">💬</span>主诉</div>
+   257|<div class="section-content">
+   258|<p>妻子反映："他变了一个人，回家不说话，喝酒越来越多，孩子叫他他也不理。"</p>
+   259|</div>
+   260|</div>
+   261|
+   262|<div class="section">
+   263|<div class="section-title"><span class="section-icon" style="background:#dbeafe;color:#2563eb">📖</span>现病史</div>
+   264|<div class="section-content">
+   265|<p>三个月前，李队长带队处置一起化工厂爆炸。现场情况非常复杂，他的一个战友（28岁的小刘）在二次爆炸中牺牲，当时李队长就在小刘旁边三米处，被冲击波掀飞，受了轻伤。</p>
+   266|<p>事故后一周，李队长表现正常，参加了小刘的追悼会，安慰了小刘的家属。同事们都说"队长扛得住"。</p>
+   267|<p>但从第二周开始，变化出现了。他<strong>反复做噩梦——梦到小刘在火里喊他"队长救我"，他却动弹不得</strong>。白天听到突然的响声（如关门声）会吓一跳，心跳加速。</p>
+   268|<p>他开始<strong>回避与事故相关的一切</strong>：不看新闻里的火灾报道，不愿经过化工厂所在的那条路，甚至不想穿消防服。他跟领导申请调到后勤岗位。</p>
+   269|<p>在家里的脾气越来越差。女儿不小心打翻水杯，他大声吼了她——这在以前从未发生过。事后他很自责，但下次还是控制不住。</p>
+   270|<p>他开始每天晚上喝半瓶白酒，说是"帮助睡眠"。妻子发现他经常一个人坐在阳台上发呆，有时候眼眶红红的，但从不说自己的感受。</p>
+   271|</div>
+   272|</div>
+   273|
+   274|<div class="section">
+   275|<div class="section-title"><span class="section-icon" style="background:#fef3c7;color:#d97706">📋</span>既往史与个人史</div>
+   276|<div class="highlight-box">
+   277|<p><strong>既往病史：</strong>身体健康，无慢性病，无精神疾病史</p>
+   278|<p><strong>个人史：</strong>父亲也是军人，从小教育他"男人不能哭"。在队里一直是最坚强的队长，战友们都佩服他</p>
+   279|<p><strong>家族史：</strong>无明确精神疾病家族史</p>
+   280|<p><strong>社会支持：</strong>有一个关系很好的老战友，但最近不太联系了</p>
+   281|</div>
+   282|</div>
+   283|
+   284|<div class="section">
+   285|<div class="section-title"><span class="section-icon" style="background:#d1fae5;color:#059669">🔍</span>精神检查</div>
+   286|<div class="section-content">
+   287|<p><strong>一般表现：</strong>外表整洁但面容疲惫，眼神警惕，坐姿紧张</p>
+   288|<p><strong>情绪状态：</strong>情感压抑，难以表达内心感受，偶尔眼眶红润</p>
+   289|<p><strong>思维内容：</strong>回避谈论事故细节，存在自责（"如果我当时..."）</p>
+   290|<p><strong>感知觉：</strong>惊跳反应明显，对突然声响高度敏感</p>
+   291|<p><strong>行为：</strong>回避消防相关事物，饮酒量增加，社交退缩</p>
+   292|</div>
+   293|</div>
+   294|
+   295|<div class="section">
+   296|<div class="section-title"><span class="section-icon" style="background:#ede9fe;color:#7c3aed">📊</span>DSM-5诊断标准对照</div>
+   297|<div class="diagnosis-card">
+   298|<div class="diagnosis-title">创伤后应激障碍（F43.10）</div>
+   299|<ul class="criteria-list">
+   300|<li><strong>标准A（创伤暴露）：</strong>✓ 亲眼目睹战友牺牲、自身受冲击波伤害</li>
+   301|<li><strong>标准B（侵入性症状）：</strong>✓ 反复噩梦（"队长救我"）、惊跳反应</li>
+   302|<li><strong>标准C（回避）：</strong>✓ 回避火灾新闻、化工厂路线、消防服</li>
+   303|<li><strong>标准D（认知/心境负性改变）：</strong>✓ 情感压抑、自责、兴趣减退</li>
+   304|<li><strong>标准E（警觉性改变）：</strong>✓ 易激惹、惊跳反应、睡眠问题、饮酒增加</li>
+   305|<li><strong>标准F（持续时间）：</strong>✓ 超过1个月（3个月）</li>
+   306|<li><strong>标准G（功能损害）：</strong>✓ 工作功能下降、家庭关系受损</li>
+   307|</ul>
+   308|</div>
+   309|</div>
+   310|
+   311|<div class="section">
+   312|<div class="section-title"><span class="section-icon" style="background:#fee2e2;color:#dc2626">⚖️</span>鉴别诊断</div>
+   313|<div class="highlight-box warning">
+   314|<p><strong>1. 急性应激障碍：</strong>症状持续超过1个月，已超出急性应激障碍的时间范围</p>
+   315|<p><strong>2. 适应障碍：</strong>存在明确的创伤事件和特征性PTSD症状群</p>
+   316|<p><strong>3. 酒精使用障碍：</strong>需同时评估——饮酒可能发展为独立的问题</p>
+   317|<p><strong>4. 抑郁障碍：</strong>需评估是否合并抑郁（情感压抑、兴趣减退）</p>
+   318|</div>
+   319|</div>
+   320|
+   321|<div class="section">
+   322|<div class="section-title"><span class="section-icon" style="background:#e0e7ff;color:#4f46e5">💊</span>治疗建议</div>
+   323|<div class="treatment-box">
+   324|<ul class="treatment-list">
+   325|<li><strong>首选心理治疗：</strong>认知加工治疗（CPT）或延长暴露治疗（PE）</li>
+   326|<li><strong>药物治疗：</strong>舍曲林或帕罗西汀（FDA批准治疗PTSD）</li>
+   327|<li><strong>酒精问题：</strong>同时干预酒精使用，可能需要戒酒治疗</li>
+   328|<li><strong>创伤聚焦：</strong>处理自责和内疚感，重建安全感</li>
+   329|<li><strong>社会支持：</strong>鼓励与战友联系，参加消防员支持小组</li>
+   330|<li><strong>性别角色：</strong>挑战"男人不能哭"的信念，鼓励情感表达</li>
+   331|</ul>
+   332|</div>
+   333|</div>
+   334|</div>
+   335|</div>
+   336|
+   337|<!-- 案例3：小陈 - 社交焦虑障碍 -->
+   338|<div class="case-card" data-category="焦虑" data-keywords="社交焦虑 脸红 回避 当众发言 大学生 自我意识">
+   339|<div class="case-header" onclick="this.parentElement.classList.toggle('expanded')">
+   340|<div class="case-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706)">😰</div>
+   341|<div class="case-meta">
+   342|<div class="case-name">小陈</div>
+   343|<div class="case-info">男 · 20岁 · 大二计算机专业</div>
+   344|<div class="case-tags">
+   345|<span class="tag tag-category">焦虑障碍</span>
+   346|<span class="tag tag-severity">中度</span>
+   347|<span class="tag tag-age">青年</span>
+   348|</div>
+   349|</div>
+   350|<div class="case-expand">▾</div>
+   351|</div>
+   352|<div class="case-body">
+   353|<div class="section">
+   354|<div class="section-title"><span class="section-icon" style="background:#ede9fe;color:#7c3aed">💬</span>主诉</div>
+   355|<div class="section-content">
+   356|<p>"我不敢在人多的地方说话，一说话就脸红、手抖，感觉自己像个傻子。"</p>
+   357|</div>
+   358|</div>
+   359|
+   360|<div class="section">
+   361|<div class="section-title"><span class="section-icon" style="background:#dbeafe;color:#2563eb">📖</span>现病史</div>
+   362|<div class="section-content">
+   363|<p>小陈从小性格内向，但学习成绩好，高中时通过微信和同学交流没问题，只是不太爱在课堂上发言。</p>
+   364|<p>上大学后，第一次小组汇报时，他站在讲台上突然大脑一片空白，脸涨得通红，声音发抖，同学在下面窃窃私语。他觉得"所有人都在笑我"。从那以后，他开始逃避一切需要当众发言的场合。</p>
+   365|<p>他选课时专门挑不需要做presentation的课。小组作业时，他主动要求"我负责写报告，不用上台"。如果有课必须做汇报，他会提前一周开始焦虑，失眠、腹泻、胃痛。</p>
+   366|<p>最近情况更严重了。他开始<strong>回避食堂（"人太多，别人会看我"）</strong>，回避社团活动，甚至在课堂上被老师点名回答问题时，心跳加速、出汗、脑子一片空白。</p>
+   367|<p>他知道自己"不应该这么紧张"，但控制不住。他下载了好几个社交技巧的视频，看了很多"如何克服社恐"的文章，但越看越焦虑——"别人怎么那么轻松，我怎么这么废物"。</p>
+   368|</div>
+   369|</div>
+   370|
+   371|<div class="section">
+   372|<div class="section-title"><span class="section-icon" style="background:#fef3c7;color:#d97706">📋</span>既往史与个人史</div>
+   373|<div class="highlight-box">
+   374|<p><strong>既往病史：</strong>无精神疾病史，无重大躯体疾病</p>
+   375|<p><strong>个人史：</strong>父亲话很少，对他的期望很高，考了第二名会说"怎么不是第一名"。母亲性格强势，从小替他做决定</p>
+   376|<p><strong>社交史：</strong>高中时有一个好朋友，上大学后失去联系。没有恋爱经历</p>
+   377|<p><strong>近期变化：</strong>逃避去食堂，经常叫外卖在宿舍吃</p>
+   378|</div>
+   379|</div>
+   380|
+   381|<div class="section">
+   382|<div class="section-title"><span class="section-icon" style="background:#d1fae5;color:#059669">🔍</span>精神检查</div>
+   383|<div class="section-content">
+   384|<p><strong>一般表现：</strong>衣着整洁，进门时低着头，避免眼神接触，说话声音小</p>
+   385|<p><strong>情绪状态：</strong>焦虑明显，面部潮红，手心出汗</p>
+   386|<p><strong>思维内容：</strong>"所有人都在笑我"、"我怎么这么废物"、"别人怎么那么轻松"</p>
+   387|<p><strong>认知特征：</strong>过度关注自己的表现，高估被负性评价的可能性</p>
+   388|</div>
+   389|</div>
+   390|
+   391|<div class="section">
+   392|<div class="section-title"><span class="section-icon" style="background:#ede9fe;color:#7c3aed">📊</span>DSM-5诊断标准对照</div>
+   393|<div class="diagnosis-card">
+   394|<div class="diagnosis-title">社交焦虑障碍（F40.10）</div>
+   395|<ul class="criteria-list">
+   396|<li><strong>标准A：</strong>✓ 对社交情况产生显著的害怕或焦虑（当众发言、被审视）</li>
+   397|<li><strong>标准B：</strong>✓ 害怕自己的言行会导致负性评价（"所有人都在笑我"）</li>
+   398|<li><strong>标准C：</strong>✓ 社交情况几乎总是促发害怕或焦虑</li>
+   399|<li><strong>标准D：</strong>✓ 主动回避社交情况（选课回避、不上台、不去食堂）</li>
+   400|<li><strong>标准E：</strong>✓ 害怕或焦虑与实际威胁不相称</li>
+   401|<li><strong>标准F：</strong>✓ 持续至少6个月（从大一到大二，超过1年）</li>
+   402|<li><strong>标准G：</strong>✓ 功能损害（学业、社交、日常生活）</li>
+   403|</ul>
+   404|</div>
+   405|</div>
+   406|
+   407|<div class="section">
+   408|<div class="section-title"><span class="section-icon" style="background:#fee2e2;color:#dc2626">⚖️</span>鉴别诊断</div>
+   409|<div class="highlight-box warning">
+   410|<p><strong>1. 惊恐障碍：</strong>惊恐发作是在社交场合中出现，而非不可预期的</p>
+   411|<p><strong>2. 广泛性焦虑障碍：</strong>焦虑主要集中在社交情境，而非广泛性的</p>
+   412|<p><strong>3. 回避型人格障碍：</strong>可能存在共病，需进一步评估人格特征</p>
+   413|<p><strong>4. 正常的害羞：</strong>症状严重程度和功能损害超出正常范围</p>
+   414|</div>
+   415|</div>
+   416|
+   417|<div class="section">
+   418|<div class="section-title"><span class="section-icon" style="background:#e0e7ff;color:#4f46e5">💊</span>治疗建议</div>
+   419|<div class="treatment-box">
+   420|<ul class="treatment-list">
+   421|<li><strong>首选心理治疗：</strong>认知行为治疗（CBT）——暴露疗法+认知重建</li>
+   422|<li><strong>暴露层级：</strong>从低焦虑情境开始（如小组讨论）逐步过渡到高焦虑情境（如课堂演讲）</li>
+   423|<li><strong>认知重建：</strong>挑战"所有人都在笑我"等灾难化思维</li>
+   424|<li><strong>社交技能训练：</strong>学习和练习社交技巧</li>
+   425|<li><strong>药物治疗：</strong>如症状严重，可考虑SSRI类药物</li>
+   426|<li><strong>家庭因素：</strong>处理父亲高期望和母亲过度保护的影响</li>
+   427|</ul>
+   428|</div>
+   429|</div>
+   430|</div>
+   431|</div>
+   432|
+   433|</div>
+   434|</div>
+   435|
+   436|
+
+<!-- 案例4：阿美 - 边缘型人格障碍 -->
+<div class="case-card" data-category="人格" data-keywords="边缘型 自伤 情绪不稳定 被抛弃 人际关系 理想化贬低">
+<div class="case-header" onclick="this.parentElement.classList.toggle('expanded')">
+<div class="case-avatar" style="background:linear-gradient(135deg,#ec4899,#db2777)">💔</div>
+<div class="case-meta">
+<div class="case-name">阿美</div>
+<div class="case-info">女 · 21岁 · 大三学生</div>
+<div class="case-tags">
+<span class="tag tag-category">人格障碍</span>
+<span class="tag tag-severity">重度</span>
+<span class="tag tag-age">青年</span>
+</div>
+</div>
+<div class="case-expand">▾</div>
+</div>
+<div class="case-body">
+<div class="section">
+<div class="section-title"><span class="section-icon" style="background:#ede9fe;color:#7c3aed">💬</span>主诉</div>
+<div class="section-content"><p>辅导员转介。室友发现她手臂上有十几道新旧不一的划痕。</p></div>
+</div>
+
+<div class="section">
+<div class="section-title"><span class="section-icon" style="background:#dbeafe;color:#2563eb">📖</span>现病史</div>
+<div class="section-content">
+<p>阿美在同学眼中是"情绪化"的人——"好的时候特别好，不好的时候吓死人"。她的几段友谊都是这样：刚开始觉得对方"简直是我的灵魂伴侣"，几周后因为一点小事（如对方和别人吃饭没叫她）就暴怒，觉得"你根本不把我当朋友"，然后冷战或大吵。</p>
+<p>大二时谈了一个男朋友。恋爱初期，她觉得"终于有人真的爱我了"，每天恨不得24小时和对方在一起。两个月后，男朋友因为期中考试忙了几天没及时回消息，她就疯狂打电话、发消息，甚至威胁"你不回我我就去死"。三个月后分手，<strong>她割了手腕</strong>。</p>
+<p>室友发现后报告了辅导员，辅导员带她去了心理咨询中心。咨询师建议她去精神科评估，她拒绝了——"我又没病，就是心情不好"。</p>
+<p>最近，她又交了一个新朋友，又开始了同样的模式。同时她开始频繁逃课，成绩从B滑到D。</p>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title"><span class="section-icon" style="background:#fef3c7;color:#d97706">📋</span>既往史与个人史</div>
+<div class="highlight-box">
+<p><strong>既往病史：</strong>从13岁开始有割手腕的行为，紧张时会割。"割的时候不觉得疼，反而觉得心里没那么堵了"</p>
+<p><strong>个人史：</strong>父母在她6岁时离婚，她被判给母亲。母亲情绪不稳定，好的时候对阿美很好，不好的时候会骂她"你怎么跟你爸一样没用"</p>
+<p><strong>家族史：</strong>母亲可能有情绪调节问题（未确诊）</p>
+<p><strong>人际关系：</strong>对被抛弃极度敏感，人际关系模式呈理想化-贬低交替</p>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title"><span class="section-icon" style="background:#d1fae5;color:#059669">🔍</span>精神检查</div>
+<div class="section-content">
+<p><strong>一般表现：</strong>外表时尚，情绪波动大，时而热情时而冷漠</p>
+<p><strong>情绪状态：</strong>情绪不稳定，易激惹，有强烈的被抛弃恐惧</p>
+<p><strong>思维内容：</strong>"你们都不理解我"、"我又没病"</p>
+<p><strong>行为：</strong>手臂有多道划痕（非自杀性自伤），人际边界模糊</p>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title"><span class="section-icon" style="background:#ede9fe;color:#7c3aed">📊</span>DSM-5诊断标准对照</div>
+<div class="diagnosis-card">
+<div class="diagnosis-title">边缘型人格障碍（F60.3）</div>
+<ul class="criteria-list">
+<li><strong>1.极力避免被抛弃：</strong>✓ 对被抛弃极度敏感，威胁自杀以挽留关系</li>
+<li><strong>2.不稳定的人际关系模式：</strong>✓ 理想化→贬低的交替模式</li>
+<li><strong>3.身份紊乱：</strong>?</li>
+<li><strong>4.冲动性：</strong>✓ 威胁自杀、疯狂打电话</li>
+<li><strong>5.反复自伤/自杀行为：</strong>✓ 割手腕（13岁起）</li>
+<li><strong>6.情感不稳定：</strong>✓ "好的时候特别好，不好的时候吓死人"</li>
+<li><strong>7.慢性空虚感：</strong>?</li>
+<li><strong>8.不恰当的强烈愤怒：</strong>✓ 因小事暴怒</li>
+<li><strong>9.应激相关的偏执/分离：</strong>?</li>
+</ul>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title"><span class="section-icon" style="background:#fee2e2;color:#dc2626">⚖️</span>鉴别诊断</div>
+<div class="highlight-box warning">
+<p><strong>1. 双相障碍：</strong>情绪波动是反应性的，而非发作性的</p>
+<p><strong>2. 重性抑郁障碍：</strong>自伤是情绪调节性的，而非自杀性的</p>
+<p><strong>3. 创伤后应激障碍：</strong>可能存在童年创伤，但核心是人格模式问题</p>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title"><span class="section-icon" style="background:#e0e7ff;color:#4f46e5">💊</span>治疗建议</div>
+<div class="treatment-box">
+<ul class="treatment-list">
+<li><strong>首选心理治疗：</strong>辩证行为治疗（DBT）——情绪调节、人际效能、痛苦耐受、正念</li>
+<li><strong>危机干预：</strong>制定自伤替代方案，建立安全计划</li>
+<li><strong>治疗关系：</strong>保持边界清晰，避免过度卷入</li>
+<li><strong>创伤处理：</strong>在稳定后处理童年创伤</li>
+<li><strong>药物治疗：</strong>情绪稳定剂（如丙戊酸钠）可能有帮助</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 案例5：小宇 - 强迫症 -->
+<div class="case-card" data-category="强迫" data-keywords="强迫症 洗手 检查 完美主义 做作业 家庭">
+<div class="case-header" onclick="this.parentElement.classList.toggle('expanded')">
+<div class="case-avatar" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed)">🔄</div>
+<div class="case-meta">
+<div class="case-name">小宇</div>
+<div class="case-info">男 · 14岁 · 初二学生</div>
+<div class="case-tags">
+<span class="tag tag-category">强迫及相关障碍</span>
+<span class="tag tag-severity">中重度</span>
+<span class="tag tag-age">青少年</span>
+</div>
+</div>
+<div class="case-expand">▾</div>
+</div>
+<div class="case-body">
+<div class="section">
+<div class="section-title"><span class="section-icon" style="background:#ede9fe;color:#7c3aed">💬</span>主诉</div>
+<div class="section-content"><p>母亲反映："他洗手洗到手都裂了，做作业一个字写不好就擦掉重写，一份作业能写三四个小时。"</p></div>
+</div>
+
+<div class="section">
+<div class="section-title"><span class="section-icon" style="background:#dbeafe;color:#2563eb">📖</span>现病史</div>
+<div class="section-content">
+<p>小宇从小做事认真，成绩优秀，父母一直觉得他"自律"。但从初一开始，"认真"逐渐变成了"控制不住"。</p>
+<p>最初是洗手。他觉得"外面的东西很脏"，从外面回家必须洗手，后来发展到洗手要按<strong>固定顺序（手心→手背→指缝→手腕），每个步骤洗7遍</strong>。如果中途被打断或数错了，必须从头再来。冬天手洗得裂口出血，他还是停不下来。</p>
+<p>后来扩展到做作业。写一个字如果觉得"不好看"，就擦掉重写。一份500字的作文，他能写3-4个小时，因为反复擦、反复写。考试时经常答不完题。</p>
+<p>最近又出现了一个新习惯——睡前要检查门锁。他已经确认锁好了，但脑子里有个声音说"万一没锁呢？"，于是反复起来检查，<strong>最多一晚检查了12次</strong>。</p>
+<p>他自己知道这些行为"没必要"，也觉得"很烦"，但如果不做，就会特别焦虑，"感觉要出大事"。</p>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title"><span class="section-icon" style="background:#fef3c7;color:#d97706">📋</span>既往史与个人史</div>
+<div class="highlight-box">
+<p><strong>既往病史：</strong>小学时曾因考试没得满分哭了一整晚。无精神疾病史</p>
+<p><strong>个人史：</strong>父亲是工程师，做事非常严谨，对小宇要求很高。母亲是小学老师，性格温和但容易焦虑</p>
+<p><strong>家族史：</strong>无明确精神疾病家族史</p>
+<p><strong>功能影响：</strong>成绩一直很好，但最近因为做作业太慢，开始跟不上进度。不让同学来家里玩，"怕他们看到我洗手的样子"</p>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title"><span class="section-icon" style="background:#d1fae5;color:#059669">🔍</span>精神检查</div>
+<div class="section-content">
+<p><strong>一般表现：</strong>衣着整洁，双手皮肤粗糙有裂口，指甲剪得很短</p>
+<p><strong>情绪状态：</strong>焦虑明显，对自己的行为感到困扰</p>
+<p><strong>思维内容：</strong>"外面的东西很脏"、"万一没锁呢"、"字不好看"</p>
+<p><strong>自知力：</strong>部分保留——知道行为"没必要"但控制不住</p>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title"><span class="section-icon" style="background:#ede9fe;color:#7c3aed">📊</span>DSM-5诊断标准对照</div>
+<div class="diagnosis-card">
+<div class="diagnosis-title">强迫症（F42.2）</div>
+<ul class="criteria-list">
+<li><strong>强迫思维：</strong>✓ "外面的东西很脏"、"万一没锁呢"、"字不好看"</li>
+<li><strong>强迫行为：</strong>✓ 仪式化洗手（7遍×4步骤）、反复擦写、反复检查门锁</li>
+<li><strong>自知力：</strong>部分保留——知道"没必要"但控制不住</li>
+<li><strong>功能损害：</strong>✓ 做作业时间过长、考试答不完、社交回避</li>
+<li><strong>耗时性：</strong>✓ 每天远超1小时</li>
+</ul>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title"><span class="section-icon" style="background:#fee2e2;color:#dc2626">⚖️</span>鉴别诊断</div>
+<div class="highlight-box warning">
+<p><strong>1. 广泛性焦虑障碍：</strong>存在明确的强迫思维和强迫行为</p>
+<p><strong>2. 躯体变形障碍：</strong>关注的是"脏"而非外貌</p>
+<p><strong>3. 强迫型人格障碍：</strong>核心是强迫症状而非人格特征</p>
+<p><strong>4. 抽动障碍：</strong>需评估是否伴有抽动（OCD常见共病）</p>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title"><span class="section-icon" style="background:#e0e7ff;color:#4f46e5">💊</span>治疗建议</div>
+<div class="treatment-box">
+<ul class="treatment-list">
+<li><strong>首选心理治疗：</strong>暴露与反应预防（ERP）——逐步暴露于恐惧情境，阻止强迫行为</li>
+<li><strong>药物治疗：</strong>SSRI类药物（如氟西汀、舍曲林）——青少年OCD的一线药物</li>
+<li><strong>家庭干预：</strong>教育父母不要参与仪式行为（如帮忙数数、确认门锁）</li>
+<li><strong>学校支持：</strong>与老师沟通，允许更多时间完成作业</li>
+<li><strong>发展性视角：</strong>父亲的完美主义要求+母亲的焦虑气质是重要的发展因素</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+
+</div>
+</div>
+
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+   437|<div class="bottom-nav">
+   438|<button class="bottom-btn" onclick="document.querySelectorAll('.case-card').forEach(c=>c.classList.add('expanded'))">全部展开</button>
+   439|<button class="bottom-btn" onclick="document.querySelectorAll('.case-card').forEach(c=>c.classList.remove('expanded'))">全部折叠</button>
+   440|<button class="bottom-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">回顶部</button>
+   441|</div>
+   442|
+   443|<script>
+   444|// 筛选功能
+   445|document.querySelectorAll('.filter-btn').forEach(btn=>{
+   446|  btn.onclick=function(){
+   447|    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+   448|    this.classList.add('active');
+   449|    const filter=this.dataset.filter;
+   450|    document.querySelectorAll('.case-card').forEach(card=>{
+   451|      if(filter==='all'){
+   452|        card.classList.remove('hidden');
+   453|      } else {
+   454|        const cat=card.dataset.category||'';
+   455|        const keywords=card.dataset.keywords||'';
+   456|        const match=cat.includes(filter)||keywords.includes(filter);
+   457|        card.classList.toggle('hidden',!match);
+   458|      }
+   459|    });
+   460|  };
+   461|});
+   462|
+   463|// 搜索功能
+   464|document.getElementById('searchInput').oninput=function(){
+   465|  const q=this.value.toLowerCase().trim();
+   466|  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+   467|  document.querySelector('[data-filter="all"]').classList.add('active');
+   468|  document.querySelectorAll('.case-card').forEach(card=>{
+   469|    const text=card.textContent.toLowerCase();
+   470|    const keywords=(card.dataset.keywords||'').toLowerCase();
+   471|    const show=!q||text.includes(q)||keywords.includes(q);
+   472|    card.classList.toggle('hidden',!show);
+   473|    if(show&&q)card.classList.add('expanded');
+   474|  });
+   475|};
+   476|
+   477|// 回到顶部按钮
+   478|window.onscroll=function(){
+   479|  document.getElementById('backTop').style.display=window.scrollY>300?'block':'none';
+   480|};
+   481|</script>
+   482|</body>
+   483|</html>
