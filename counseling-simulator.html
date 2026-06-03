@@ -116,12 +116,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .score-label{font-size:0.9em;color:#065f46}
 .report-footer{padding:16px 24px;border-top:1px solid var(--gray-200);display:flex;justify-content:flex-end;gap:8px}
 
-/* 快捷问题 */
-.quick-questions{padding:12px 20px;border-top:1px solid var(--gray-200);background:white}
-.quick-title{font-size:0.8em;color:var(--gray-500);margin-bottom:8px}
-.quick-list{display:flex;flex-wrap:wrap;gap:6px}
-.quick-btn{padding:6px 12px;background:var(--gray-100);border:1px solid var(--gray-200);border-radius:16px;font-size:0.8em;cursor:pointer;transition:all 0.2s}
-.quick-btn:hover{background:var(--primary);color:white;border-color:var(--primary)}
+/* 学生信息弹窗 */
+.student-overlay{position:fixed;inset:0;background:linear-gradient(135deg,rgba(79,70,229,.96),rgba(55,48,163,.96));z-index:200;display:none;align-items:center;justify-content:center;padding:24px}
+.student-overlay.active{display:flex}
+.student-card{width:min(92vw,460px);background:white;border-radius:24px;padding:32px;box-shadow:0 30px 80px rgba(15,23,42,.35)}
+.student-card h2{font-size:1.45em;color:var(--gray-900);margin-bottom:8px}
+.student-card p{color:var(--gray-500);line-height:1.7;margin-bottom:22px}
+.student-fields{display:flex;flex-direction:column;gap:14px;margin-bottom:22px}
+.student-field label{display:block;font-size:.88em;font-weight:700;color:var(--gray-700);margin-bottom:6px}
+.student-field input{width:100%;padding:13px 14px;border:2px solid var(--gray-200);border-radius:12px;font-size:1em;outline:none;transition:border-color .2s}
+.student-field input:focus{border-color:var(--primary)}
+.student-hint{font-size:.82em;color:var(--gray-400);margin-top:10px;line-height:1.6}
 
 @media(max-width:768px){
   .sidebar{display:none}
@@ -142,11 +147,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
     <div class="sidebar-header">
       <h2>选择案例</h2>
       <select class="case-selector" id="caseSelector">
-        <option value="case1">案例1：小雨（高三抑郁）</option>
-        <option value="case2">案例2：李队长（PTSD）</option>
-        <option value="case3">案例3：小陈（社交焦虑）</option>
-        <option value="case4">案例4：阿美（边缘型人格）</option>
-        <option value="case5">案例5：小宇（强迫症）</option>
+        <option value="case1">案例1：小雨（高三学生）</option>
+        <option value="case2">案例2：李队长（消防队长）</option>
+        <option value="case3">案例3：小陈（大学生）</option>
+        <option value="case4">案例4：阿美（大学生）</option>
+        <option value="case5">案例5：小宇（初中生）</option>
       </select>
     </div>
     <div class="sidebar-content" id="caseInfo">
@@ -166,12 +171,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
     </div>
     <div class="chat-messages" id="chatMessages">
       <!-- 动态填充 -->
-    </div>
-    <div class="quick-questions">
-      <div class="quick-title">💡 建议提问（点击直接发送）</div>
-      <div class="quick-list" id="quickQuestions">
-        <!-- 动态填充 -->
-      </div>
     </div>
     <div class="chat-input">
       <div class="input-row">
@@ -235,6 +234,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 </div>
 </div>
 
+<!-- 学生信息弹窗 -->
+<div class="student-overlay active" id="studentOverlay">
+  <div class="student-card">
+    <h2>开始模拟咨询训练</h2>
+    <p>请先填写学生信息。进入后不会提供提问提示，需要你像真实咨询师一样自行组织问题、收集线索并完成诊断。</p>
+    <div class="student-fields">
+      <div class="student-field">
+        <label for="studentName">姓名 <span style="color:var(--danger)">*</span></label>
+        <input type="text" id="studentName" placeholder="请输入姓名" autocomplete="name" onkeypress="if(event.key==='Enter')startTraining()">
+      </div>
+      <div class="student-field">
+        <label for="studentClass">班级 / 学号（选填）</label>
+        <input type="text" id="studentClass" placeholder="例如：23心理1班 / 学号" onkeypress="if(event.key==='Enter')startTraining()">
+      </div>
+    </div>
+    <button class="btn btn-primary" style="width:100%;padding:13px 16px" onclick="startTraining()">进入训练</button>
+    <div class="student-hint">提示：请根据主诉逐步询问症状、病程、功能损害、风险与背景信息。</div>
+  </div>
+</div>
+
 <!-- 评估报告弹窗 -->
 <div class="report-overlay" id="reportOverlay">
   <div class="report-modal">
@@ -287,14 +306,7 @@ const cases = {
       "朋友|同学|同桌|社交": "'以前和同桌关系很好，现在不想说话，觉得她也不会理解我。'",
       "焦虑|紧张|担心": "'每天都很紧张，怕考不好，怕对不起爸妈，越紧张越学不进去。'",
       "注意力|集中|走神|学习": "'上课根本听不进去，脑子里乱七八糟的，一道题看半天也看不懂。'"
-    },
-    suggestedQuestions: [
-      "你最近睡眠怎么样？",
-      "有没有想过伤害自己？",
-      "你觉得自己最大的压力是什么？",
-      "以前有没有类似的情况？",
-      "你和父母的关系怎么样？"
-    ]
+    }
   },
   case2: {
     name: "李队长",
@@ -329,14 +341,7 @@ const cases = {
       "闪回|画面|想起来": "'有时候突然就会闪过当时的画面，火光、爆炸声、他倒下的样子...' ",
       "睡眠|检查|门锁": "不适用此案例",
       "焦虑|紧张": "'听到突然的响声会吓一跳，心跳加速。'"
-    },
-    suggestedQuestions: [
-      "那天发生了什么？",
-      "你现在睡眠怎么样？",
-      "有没有喝酒的习惯？",
-      "你还愿意穿消防服吗？",
-      "你现在能正常工作吗？"
-    ]
+    }
   },
   case3: {
     name: "小陈",
@@ -369,14 +374,7 @@ const cases = {
       "朋友|同学|室友": "'室友说就是太内向了，多锻炼就好了。但我知道不是这样。'",
       "焦虑|担心|万一": "'万一出丑怎么办？万一忘词怎么办？万一被人笑话怎么办？'",
       "内向|性格": "'从小性格内向，但高中用微信交流没问题，只是不爱在课堂上发言。'"
-    },
-    suggestedQuestions: [
-      "你在什么情况下最紧张？",
-      "别人怎么看你？",
-      "你尝试过什么方法克服？",
-      "你父亲怎么评价你？",
-      "这种情况什么时候开始的？"
-    ]
+    }
   },
   case4: {
     name: "阿美",
@@ -408,14 +406,7 @@ const cases = {
       "情绪|控制不住|暴怒": "'好的时候特别好，不好的时候吓死人。我知道这样不好，但控制不住。'",
       "孤独|空虚|一个人": "'我也不知道，就是有时候觉得特别空虚，好像心里有个洞。'",
       "我又没病|心理咨询|看医生": "'我又没病，就是心情不好。'（拒绝去精神科评估）"
-    },
-    suggestedQuestions: [
-      "这些划痕是怎么来的？",
-      "你和朋友的关系怎么样？",
-      "你小时候的家庭环境？",
-      "你害怕什么？",
-      "你情绪波动大吗？"
-    ]
+    }
   },
   case5: {
     name: "小宇",
@@ -447,14 +438,7 @@ const cases = {
       "成绩|学习|考试": "'成绩一直很好，但最近因为做作业太慢，开始跟不上进度。考试经常答不完题。'",
       "同学|朋友|社交": "'不让同学来家里玩，怕他们看到我洗手的样子。'",
       "焦虑|紧张|万一": "'如果不做那些仪式，就会特别焦虑，感觉要出大事。'"
-    },
-    suggestedQuestions: [
-      "你洗手有什么特别的顺序吗？",
-      "如果不洗手会怎样？",
-      "你做作业要花多长时间？",
-      "你晚上睡觉前做什么？",
-      "你爸爸对你要求严格吗？"
-    ]
+    }
   }
 };
 
@@ -463,6 +447,21 @@ let currentData = cases[currentCase];
 let isConsultationActive = true;
 let questionCount = 0;
 let collectedInfo = new Set();
+let studentProfile = { name: '', classInfo: '' };
+
+function startTraining() {
+  const name = document.getElementById('studentName').value.trim();
+  const classInfo = document.getElementById('studentClass').value.trim();
+  if (!name) {
+    alert('请先填写姓名');
+    document.getElementById('studentName').focus();
+    return;
+  }
+  studentProfile = { name, classInfo };
+  document.getElementById('studentOverlay').classList.remove('active');
+  document.querySelector('.header-info').textContent = `${name}${classInfo ? ' · ' + classInfo : ''}｜自主提问，收集信息，完成诊断`;
+  document.getElementById('userInput').focus();
+}
 
 // 初始化
 function init() {
@@ -522,9 +521,6 @@ function loadCase(caseId) {
   `;
   document.getElementById('chatMessages').innerHTML = chatHtml;
   
-  // 快捷问题
-  loadQuickQuestions();
-  
   // 重置诊断表单
   document.getElementById('primaryDiagnosis').value = '';
   document.getElementById('diagnosisBasis').value = '';
@@ -533,18 +529,6 @@ function loadCase(caseId) {
   document.getElementById('riskLevel').value = '';
 }
 
-// 加载快捷问题
-function loadQuickQuestions() {
-  const questions = currentData.suggestedQuestions;
-  const html = questions.map(q => `<button class="quick-btn" onclick="sendQuickQuestion('${q}')">${q}</button>`).join('');
-  document.getElementById('quickQuestions').innerHTML = html;
-}
-
-// 发送快捷问题
-function sendQuickQuestion(question) {
-  document.getElementById('userInput').value = question;
-  sendMessage();
-}
 
 // 发送消息
 function sendMessage() {
@@ -616,17 +600,6 @@ function updateProgress() {
   const total = Object.keys(currentData.keywords).length;
   const collected = collectedInfo.size;
   document.getElementById('infoCollected').textContent = `${collected}/${total}`;
-  
-  // 更新快捷问题（移除已问过的）
-  const remainingQuestions = currentData.suggestedQuestions.filter(q => {
-    const qLower = q.toLowerCase();
-    return !Array.from(collectedInfo).some(keyword => qLower.includes(keyword));
-  });
-  
-  if (remainingQuestions.length > 0) {
-    const html = remainingQuestions.map(q => `<button class="quick-btn" onclick="sendQuickQuestion('${q}')">${q}</button>`).join('');
-    document.getElementById('quickQuestions').innerHTML = html;
-  }
 }
 
 // 结束咨询
@@ -695,6 +668,10 @@ function showReport(diagnosis, isCorrect, score, basis, differential, treatment,
   const riskLabels = { low: '低风险', medium: '中等风险', high: '高风险（需立即干预）' };
   
   const html = `
+    <div class="report-section">
+      <div class="report-section-title">学生信息</div>
+      <div class="report-item"><strong>学生：</strong>${studentProfile.name || '未填写'}${studentProfile.classInfo ? '（' + studentProfile.classInfo + '）' : ''}</div>
+    </div>
     <div class="report-section">
       <div class="report-section-title">案例信息</div>
       <div class="report-item"><strong>来访者：</strong>${currentData.name}（${currentData.info.gender}，${currentData.info.age}）</div>
