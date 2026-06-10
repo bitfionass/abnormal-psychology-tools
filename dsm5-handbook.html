@@ -16,11 +16,9 @@ h1{font-size:1.6em;margin-bottom:8px;text-shadow:2px 2px 4px rgba(0,0,0,0.3);fon
 .stats{display:flex;justify-content:center;gap:30px;margin:12px 0}
 .stat-number{font-size:1.8em;font-weight:700}
 .stat-label{font-size:0.8em;opacity:0.8}
-.search-box{margin:15px auto;padding:0 5px}
+.toolbar-row{display:flex;gap:10px;margin:15px 5px;align-items:center}
+.search-box{flex:1;min-width:0}
 .search-box input{width:100%;padding:12px 16px;font-size:15px;border:none;border-radius:50px;outline:none;box-shadow:0 4px 15px rgba(0,0,0,0.2)}
-.nav-tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:16px;padding:0 5px}
-.nav-tab{padding:8px 14px;background:rgba(255,255,255,0.2);color:white;border:none;border-radius:20px;cursor:pointer;font-size:13px;transition:all 0.3s}
-.nav-tab:hover,.nav-tab.active{background:white;color:#667eea}
 .chapter-section{background:white;border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 4px 15px rgba(0,0,0,0.1)}
 .chapter-title{font-size:1.3em;color:#667eea;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid #eee;font-weight:600}
 .disorder-card{background:#f8f9fa;border-radius:12px;padding:16px;margin-bottom:12px;border-left:4px solid #667eea}
@@ -35,6 +33,7 @@ h1{font-size:1.6em;margin-bottom:8px;text-shadow:2px 2px 4px rgba(0,0,0,0.3);fon
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(102,126,234,0.95);padding:10px 15px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));display:flex;justify-content:center;gap:15px;z-index:100}
 .bottom-btn{padding:10px 20px;background:rgba(255,255,255,0.2);color:white;border:none;border-radius:25px;font-size:14px;cursor:pointer}
 #content{padding-bottom:70px}
+#chapterSelect{flex:0 0 auto;min-width:140px;padding:12px 14px;font-size:15px;border:none;border-radius:50px;outline:none;box-shadow:0 4px 15px rgba(0,0,0,0.2);background:white;color:#333;-webkit-appearance:none;appearance:none}
 </style>
 
 <style id="mobile-adaptation-20260603">
@@ -47,6 +46,9 @@ table { width: 100%; border-collapse: collapse; }
 
 @media (max-width: 900px) {
   html { font-size: 16px; }
+  .toolbar-row { flex-direction: column; }
+  #chapterSelect { width: 100%; }
+  .stats { display: flex !important; flex-direction: row !important; justify-content: center !important; gap: 20px !important; }
   body {
     width: 100% !important;
     min-width: 0 !important;
@@ -101,7 +103,7 @@ table { width: 100%; border-collapse: collapse; }
     box-sizing: border-box !important;
   }
 
-  .filters, .filter-bar, .tabs, .nav-tabs, .category-tabs, .toolbar, .actions,
+  .filters, .filter-bar, .tabs, .category-tabs, .toolbar, .actions,
   .button-group, .controls {
     display: flex !important;
     flex-wrap: nowrap !important;
@@ -110,7 +112,7 @@ table { width: 100%; border-collapse: collapse; }
     padding-bottom: 8px !important;
     -webkit-overflow-scrolling: touch !important;
   }
-  .filters > *, .filter-bar > *, .tabs > *, .nav-tabs > *, .category-tabs > *,
+  .filters > *, .filter-bar > *, .tabs > *, .category-tabs > *,
   .toolbar > *, .actions > *, .button-group > *, .controls > * {
     flex: 0 0 auto !important;
   }
@@ -179,36 +181,36 @@ table { width: 100%; border-collapse: collapse; }
 <h1>DSM-5 诊断标准速查</h1>
 <div class="stats">
 </div>
-<div class="search-box"><input type="text" id="searchInput" placeholder="🔍 搜索障碍名称..." autocomplete="off"></div>
+<div class="toolbar-row"><div class="search-box"><input type="text" id="searchInput" placeholder="🔍 搜索障碍名称..." autocomplete="off"></div>
+<select id="chapterSelect">
+            <option value="all">全部章节</option>
+            <option value="0">智力障碍(智力发育障碍)</option>
+            <option value="1">交流障碍</option>
+            <option value="2">孤独症(自闭症)谱系障碍</option>
+            <option value="3">注意缺陷/多动障碍</option>
+            <option value="4">特定学习障碍</option>
+            <option value="5">运动障碍</option>
+            <option value="6">抽动障碍</option>
+            <option value="7">精神分裂症谱系及其他精神病性障碍</option>
+            <option value="8">双相及相关障碍</option>
+            <option value="9">抑郁障碍</option>
+            <option value="10">焦虑障碍</option>
+            <option value="11">强迫及相关障碍</option>
+            <option value="12">创伤及应激相关障碍</option>
+            <option value="13">分离障碍</option>
+            <option value="14">躯体症状及相关障碍</option>
+            <option value="15">喂食及进食障碍</option>
+            <option value="16">排泄障碍</option>
+            <option value="17">睡眠-觉醒障碍</option>
+            <option value="18">性功能失调</option>
+            <option value="19">性别烦躁</option>
+            <option value="20">破坏性、冲动控制及品行障碍</option>
+            <option value="21">物质相关及成瘾障碍</option>
+            <option value="22">神经认知障碍</option>
+            <option value="23">人格障碍</option>
+            <option value="24">性欲倒错障碍</option>
+</select></div>
 </header>
-<div class="nav-tabs" id="navTabs">
-            <button class="nav-tab active" data-chapter="all">全部</button>
-            <button class="nav-tab" data-chapter="0">智力障碍(智力发</button>
-            <button class="nav-tab" data-chapter="1">交流障碍</button>
-            <button class="nav-tab" data-chapter="2">孤独症(自闭症)</button>
-            <button class="nav-tab" data-chapter="3">注意缺陷/多动障</button>
-            <button class="nav-tab" data-chapter="4">特定学习障碍</button>
-            <button class="nav-tab" data-chapter="5">运动障碍</button>
-            <button class="nav-tab" data-chapter="6">抽动障碍</button>
-            <button class="nav-tab" data-chapter="7">精神分裂症谱系及</button>
-            <button class="nav-tab" data-chapter="8">双相及相关障碍</button>
-            <button class="nav-tab" data-chapter="9">抑郁障碍</button>
-            <button class="nav-tab" data-chapter="10">焦虑障碍</button>
-            <button class="nav-tab" data-chapter="11">强迫及相关障碍</button>
-            <button class="nav-tab" data-chapter="12">创伤及应激相关障</button>
-            <button class="nav-tab" data-chapter="13">分离障碍</button>
-            <button class="nav-tab" data-chapter="14">躯体症状及相关障</button>
-            <button class="nav-tab" data-chapter="15">喂食及进食障碍</button>
-            <button class="nav-tab" data-chapter="16">排泄障碍</button>
-            <button class="nav-tab" data-chapter="17">睡眠-觉醒障碍</button>
-            <button class="nav-tab" data-chapter="18">性功能失调</button>
-            <button class="nav-tab" data-chapter="19">性别烦躁</button>
-            <button class="nav-tab" data-chapter="20">破坏性、冲动控制</button>
-            <button class="nav-tab" data-chapter="21">物质相关及成瘾障</button>
-            <button class="nav-tab" data-chapter="22">神经认知障碍</button>
-            <button class="nav-tab" data-chapter="23">人格障碍</button>
-            <button class="nav-tab" data-chapter="24">性欲倒错障碍</button>
-</div>
 <div id="content">
             <div class="chapter-section" data-chapter="0"><h2 class="chapter-title">智力障碍(智力发育障碍)</h2><div class="disorder-card" data-name="智力障碍(智力发育障碍)"><div class="disorder-name">智力障碍(智力发育障碍)</div><div class="criteria-list"><div class="criteria-item"><span class="criteria-letter">A.</span>经过临床评估和个体化、标准化的智力测评确认的智力功能的缺陷，如推理、问题解决、计划、抽象思维、判断、学业学习和从经验中学习。</div><div class="criteria-item"><span class="criteria-letter">B.</span>适应功能的缺陷导致未能达到个人的独立性和社会责任方面的发育水平和社会文化标准。在没有持续的支持的情况下，适应缺陷导致一个或多个日常生活功能受限，如交流、社会参与和独立生活，且在多个环境中，如家庭、学校、工作和社区。</div><div class="criteria-item"><span class="criteria-letter">C.</span>智力和适应缺陷在发育阶段发生。</div></div></div></div>
             <div class="chapter-section" data-chapter="1"><h2 class="chapter-title">交流障碍</h2><div class="disorder-card" data-name="语言障碍"><div class="disorder-name">语言障碍</div><div class="criteria-list"><div class="criteria-item"><span class="criteria-letter">A.</span>由于语言的综合理解或生成方面的缺陷，导致长期在各种形式的语言习得和使用中存在持续困难(即说、写、手语或其他)，包括下列情况：</div><div class="criteria-item" style="margin-left:15px;">1. 词汇减少(字的知识和运用)。</div><div class="criteria-item" style="margin-left:15px;">2. 句式结构局限(根据语法和词态学规则，把字和词连在一起形成句子的能力)。</div><div class="criteria-item" style="margin-left:15px;">3. 论述缺陷(使用词汇和连接句子来解释或描述一个主题或系列事件或对话的能力)。</div><div class="criteria-item"><span class="criteria-letter">B.</span>语言能力显著地、量化地低于年龄预期，导致在有效交流、社交参与、学业成绩或职业表现方面的功能受限，可单独出现或任意组合出现。</div><div class="criteria-item"><span class="criteria-letter">C.</span>症状发生于发育早期。</div><div class="criteria-item"><span class="criteria-letter">D.</span>这些困难并非由于听觉或其他感觉的损伤、运动功能失调或其他躯体疾病或神经疾病所致，也不能用智力缺陷(智力发育障碍)或全面发育迟缓来更好地解释。</div></div></div><div class="disorder-card" data-name="语音障碍"><div class="disorder-name">语音障碍</div><div class="criteria-list"><div class="criteria-item"><span class="criteria-letter">A.</span>持续的语音生成困难影响了语音的可理解度，或妨碍了信息的口语式交流。</div><div class="criteria-item"><span class="criteria-letter">B.</span>该障碍导致了有效交流方面的局限，干扰了社交参与、学业成绩或职业表现，可单独出现或任意组合出现。</div><div class="criteria-item"><span class="criteria-letter">C.</span>症状发生于发育早期。</div><div class="criteria-item"><span class="criteria-letter">D.</span>这些困难并非由于先天的或获得性疾病所致，如脑瘫、腭裂、耳聋或听力丧失、创伤性脑损伤、其他躯体疾病、神经疾病。</div></div></div><div class="disorder-card" data-name="童年发生的言语流畅障碍(口吃)"><div class="disorder-name">童年发生的言语流畅障碍(口吃)</div><div class="criteria-list"><div class="criteria-item"><span class="criteria-letter">A.</span>言语的正常流利程度和停顿模式的紊乱，对于个体的年龄和语言能力而言是不适当的，且长期持续存在，其特点是频繁和显著地出现下列1项(或更多)症状：</div><div class="criteria-item" style="margin-left:15px;">1. 语音和音节的重复。</div><div class="criteria-item" style="margin-left:15px;">2. 元音和辅音的语音延长。</div><div class="criteria-item" style="margin-left:15px;">3. 字词的断裂(例如，在一个字词内停顿)。</div><div class="criteria-item" style="margin-left:15px;">4. 有声或无声的阻断(言语中有内容的或无内容的停顿)。</div><div class="criteria-item" style="margin-left:15px;">5. 迂回的说法(以其他字词替代困难字词)。</div><div class="criteria-item" style="margin-left:15px;">6. 字词生成伴有过度的躯体紧张。</div><div class="criteria-item" style="margin-left:15px;">7. 重复单音节的字(例如，"我——我——我——我看见他")。</div><div class="criteria-item"><span class="criteria-letter">B.</span>这种障碍造成说话焦虑或有效交流、社交参与、学业成绩或职业表现的局限，可单独出现或任意组合出现。</div><div class="criteria-item"><span class="criteria-letter">C.</span>症状发生于发育早期。(注：晚期发生的案例应被诊断为F98.5 成年发生的流畅性障碍。)</div><div class="criteria-item"><span class="criteria-letter">D.</span>这种障碍并非由于言语-运动或感觉缺陷，与神经系统损伤有关的言语障碍(例如，中风、肿瘤、外伤)或其他躯体疾病所致，且不能用其他精神障碍来更好地解释。</div></div></div><div class="disorder-card" data-name="社交(语用)交流障碍"><div class="disorder-name">社交(语用)交流障碍</div><div class="criteria-list"><div class="criteria-item"><span class="criteria-letter">A.</span>在社交使用口语和非口语交流方面的持续困难，表现为下列所有各项症状：</div><div class="criteria-item" style="margin-left:15px;">1. 以社交为目的的交流缺陷，例如，在社交情景下以合适的方式进行问候和分享信息。</div><div class="criteria-item" style="margin-left:15px;">2. 变换交流方式以匹配语境或听众需要的能力的损伤，例如，在教室里和在操场上讲话不同，与孩子和与成年人交谈不同，并避免使用过于正式的语言。</div><div class="criteria-item" style="margin-left:15px;">3. 遵循对话和讲故事的规则有困难，例如，轮流交谈，被误解时改述，知道如何使用语言和非语言的信号去调节互动。</div><div class="criteria-item" style="margin-left:15px;">4. 理解什么是没有明确表述出来的(例如，做出推论)和非字面或模棱两可的意思(例如，成语、幽默、隐喻，根据语境解释有多重含义的)有困难。</div><div class="criteria-item"><span class="criteria-letter">B.</span>这种缺陷导致了有效交流、社交参与、社交关系、学业成绩或职业表现方面的功能局限，可单独出现或任意组合出现。</div><div class="criteria-item"><span class="criteria-letter">C.</span>症状发生于发育早期(但是，直到社交交流的需求超过其有限能力时，缺陷可能才会完全表现出来)。</div><div class="criteria-item"><span class="criteria-letter">D.</span>这些症状并非由于其他躯体疾病或神经疾病，或构词、语法方面的低能力所致，且不能用孤独症(自闭症)谱系障碍、智力障碍(智力发育障碍)、全面发育迟缓或其他精神障碍来更好地解释。</div></div></div></div>
@@ -244,12 +246,11 @@ table { width: 100%; border-collapse: collapse; }
 </div>
 </div>
 <script>
-document.querySelectorAll('.nav-tab').forEach(t=>{t.onclick=function(){
-document.querySelectorAll('.nav-tab').forEach(x=>x.classList.remove('active'));this.classList.add('active');
-const ch=this.dataset.chapter;
+document.getElementById('chapterSelect').onchange=function(){
+const ch=this.value;
 document.querySelectorAll('.chapter-section').forEach(s=>s.classList.toggle('hidden',ch!=='all'&&s.dataset.chapter!==ch));
 window.scrollTo({top:0,behavior:'smooth'});
-}});
+};
 document.getElementById('searchInput').oninput=function(){
 const q=this.value.toLowerCase().trim();
 document.querySelectorAll('.disorder-card').forEach(c=>{
