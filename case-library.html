@@ -205,10 +205,10 @@ const grid=document.getElementById('grid'), filters=document.getElementById('fil
 function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function card(c){return `<article class="case-card" data-id="${c.id}"><div class="case-head" onclick="this.parentElement.classList.toggle('open')"><div class="meta"><span class="id">${c.id}</span><span class="cat">${esc(c.category)}</span></div><div class="person">${esc(c.person)}</div><span class="diag">${esc(c.diagnosis)}</span></div><div class="case-body"><div class="section"><h3>情境化案例描述</h3><p class="story">${esc(c.story)}</p></div><div class="section"><h3>主诉 / 转介原因</h3><p class="complaint">${esc(c.complaint)}</p></div><div class="section"><h3>现病史与补充线索</h3><p>${esc(c.history)}</p></div><div class="section"><h3>课堂观察要点</h3><p class="analysis">${esc(c.observe||c.analysis)}</p></div><div class="section"><h3>5P概念化提示</h3><p class="fivep">${esc(c.fiveP||'')}</p></div><div class="section"><h3>建议追问方向</h3><ul class="q-list">${(c.questions||[]).map(q=>`<li>${esc(q)}</li>`).join('')}</ul></div><div class="section"><h3>鉴别诊断方向</h3><p class="diff">${esc(c.diff)}</p></div></div></article>`}
 function renderFilters(){categories.forEach(cat=>filters.insertAdjacentHTML('beforeend',`<button class="filter" data-cat="${esc(cat)}">${esc(cat)}</button>`))}
-function render(){const q=search.value.trim().toLowerCase();const list=cases.filter(c=>(activeCat==='全部'||c.category===activeCat)&&Object.values(c).join(' ').toLowerCase().includes(q));grid.innerHTML=list.map(card).join('');countLine.textContent=`当前显示 ${list.length} / ${cases.length} 个案例${activeCat==='全部'?'':' · '+activeCat}`;empty.style.display=list.length?'none':'block';if(q)document.querySelectorAll('.case-card').forEach(x=>x.classList.add('open'))}
+function render(){const list=cases.filter(c=>(activeCat==='全部'||c.category===activeCat));grid.innerHTML=list.map(card).join('');countLine.textContent=`当前显示 ${list.length} / ${cases.length} 个案例${activeCat==='全部'?'':' · '+activeCat}`;empty.style.display=list.length?'none':'block';}
 function toggleAll(open){document.querySelectorAll('.case-card').forEach(x=>x.classList.toggle('open',open))}
 filters.addEventListener('click',e=>{const b=e.target.closest('.filter');if(!b)return;document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');activeCat=b.dataset.cat;render();});
-search.addEventListener('input',render);renderFilters();render();
+renderFilters();render();
 </script>
 </body>
 </html>
