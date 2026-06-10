@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>心理诊断侦探局｜案例卡</title>
+<title>快速诊断练习</title>
 <style>
 :root{
   --bg:#f6f8fb; --card:#ffffff; --ink:#172033; --muted:#667085; --line:#d9e2ef;
@@ -204,12 +204,10 @@ table { width: 100%; border-collapse: collapse; }
 
 </head>
 <body>
-<header><div class="title">心理诊断侦探局｜案例卡</div><div class="sub">选择案例 → 阅读线索 → 提交诊断 → 查看参考答案</div></header>
+<header><div class="title">快速诊断练习</div><div class="sub"></div></header>
 <main class="wrap">
-<section class="notice"><b>课堂规则：</b>先找证据，再提假设。不要把单个症状直接等同于诊断；本活动是课堂诊断推理训练，不是临床诊断。</section>
 <div class="selector" id="selector"></div>
 <div id="cards"></div>
-<p class="mini">提示：教师可把本HTML文件发到班级群；学生用手机浏览器打开即可。</p>
 </main>
 <nav class="actions"><button class="secondary" onclick="window.scrollTo({top:0,behavior:'smooth'})">回到选择</button><a class="primary" href="https://icn05rk2fwpf.feishu.cn/base/ZhKVbPPikaX28rssOtscrKNCnrd?table=tbl9v2noufZ1dbqW&view=vewGomSl0K" target="_blank">填写小组表</a></nav>
 <script>
@@ -240,6 +238,7 @@ function renderRef(c){
     <div class="ref-section"><h4>🔍 最可能方向</h4><p>${r.direction}</p></div>
     <div class="ref-section"><h4>📋 关键证据</h4><ul>${r.evidence.map(e=>`<li>${e}</li>`).join('')}</ul></div>
     <div class="ref-section"><h4>⚖️ 必须鉴别</h4><ul>${r.mustDiff.map(d=>`<li>${d}</li>`).join('')}</ul></div>
+    <div class="ref-answer-extra"></div>
     <div class="ref-conclusion">💡 <strong>收束点：</strong>${r.conclusion}</div>
   </div>`;
 }
@@ -249,19 +248,17 @@ cases.forEach((c,i)=>{
     <div class="caseHead"><div class="caseTag">CASE ${c.id}</div><div class="caseTitle">${c.title}</div></div>
     <div class="caseBody">
       <p class="story">${c.story}</p>
-      <div class="block"><h3>🔎 可疑线索</h3>${list(c.clues)}</div>
-      <div class="block"><h3>⚖️ 需要鉴别</h3>${list(c.diff)}</div>
-      <div class="block"><h3>❓ 建议追问</h3>${list(c.ask)}</div>
-      <div class="risk">先独立思考，填写诊断后再看参考答案。</div>
     </div>
     <div class="diagnosis-form" id="form-${c.id}">
       <h3>📝 你的诊断</h3>
-      <select id="sel-${c.id}">
-        <option value="">选择你认为最可能的诊断方向…</option>
-        ${c.diff.map(d=>`<option value="${d}">${d}</option>`).join('')}
-        <option value="其他">其他（请在下方说明）</option>
-      </select>
-      <textarea id="reason-${c.id}" placeholder="简要说明你的诊断依据（选填）：关键症状、鉴别理由等…"></textarea>
+      <label style="font-size:13px;font-weight:700;color:#0f4cbf;margin-bottom:4px;display:block">① 诊断方向</label>
+      <input type="text" id="sel-${c.id}" placeholder="你认为最可能的诊断是什么？" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:15px;font-family:inherit;margin-bottom:10px;background:#fff">
+      <label style="font-size:13px;font-weight:700;color:#0f4cbf;margin-bottom:4px;display:block">② 诊断依据（你从案例中找到了哪些支持证据？）</label>
+      <textarea id="basis-${c.id}" placeholder="列出你认为支持诊断的关键症状、行为或线索…"></textarea>
+      <label style="font-size:13px;font-weight:700;color:#0f4cbf;margin-bottom:4px;display:block">③ 鉴别分析（哪些诊断需要排除？为什么？）</label>
+      <textarea id="diff-${c.id}" placeholder="列出需要鉴别的其他诊断，并说明排除理由…"></textarea>
+      <label style="font-size:13px;font-weight:700;color:#0f4cbf;margin-bottom:4px;display:block">④ 如果要追问来访者，你会问什么？</label>
+      <textarea id="ask-${c.id}" placeholder="写出1-2个你认为最重要的追问问题…"></textarea>
       <button class="submit-btn" onclick="submitDiagnosis('${c.id}')">提交并查看参考答案</button>
     </div>
     ${renderRef(c)}
@@ -269,14 +266,26 @@ cases.forEach((c,i)=>{
 });
 function submitDiagnosis(id){
   const sel=document.getElementById('sel-'+id);
-  const reason=document.getElementById('reason-'+id);
+  const basis=document.getElementById('basis-'+id);
+  const diff=document.getElementById('diff-'+id);
+  const ask=document.getElementById('ask-'+id);
   if(!sel.value){alert('请先选择一个诊断方向');return;}
   const form=document.getElementById('form-'+id);
   const ref=document.getElementById('ref-'+id);
-  form.innerHTML=`<div class="score-badge">✓ 已提交：${sel.value}</div>${reason.value?`<p style="font-size:14px;color:#667085;margin:6px 0 0">你的依据：${reason.value}</p>`:''}`;
+  const c=cases.find(x=>x.id===id);
+  form.innerHTML=`
+    <div class="score-badge">✓ 已提交：${sel.value}</div>
+    ${basis.value?`<div style="margin-top:10px"><div style="font-size:13px;font-weight:700;color:#0f4cbf">你的诊断依据</div><p style="font-size:14px;color:#475569;margin:4px 0 0;line-height:1.6">${basis.value}</p></div>`:''}
+    ${diff.value?`<div style="margin-top:10px"><div style="font-size:13px;font-weight:700;color:#0f4cbf">你的鉴别分析</div><p style="font-size:14px;color:#475569;margin:4px 0 0;line-height:1.6">${diff.value}</p></div>`:''}
+    ${ask.value?`<div style="margin-top:10px"><div style="font-size:13px;font-weight:700;color:#0f4cbf">你的追问</div><p style="font-size:14px;color:#475569;margin:4px 0 0;line-height:1.6">${ask.value}</p></div>`:''}
+  `;
+  ref.querySelector('.ref-answer-extra').innerHTML=`
+    <div class="ref-section"><h4>🔎 案例关键线索</h4><ul>${c.clues.map(e=>`<li>${e}</li>`).join('')}</ul></div>
+    <div class="ref-section"><h4>❓ 建议追问方向</h4><ul>${c.ask.map(e=>`<li>${e}</li>`).join('')}</ul></div>
+  `;
   ref.classList.add('show');
   ref.scrollIntoView({behavior:'smooth',block:'start'});
-  localStorage.setItem('detective_'+id, JSON.stringify({diagnosis:sel.value,reason:reason.value,time:new Date().toISOString()}));
+  localStorage.setItem('detective_'+id, JSON.stringify({diagnosis:sel.value,basis:basis.value,diff:diff.value,ask:ask.value,time:new Date().toISOString()}));
 }
 selector.addEventListener('click',e=>{const b=e.target.closest('.caseBtn'); if(!b)return; document.querySelectorAll('.caseBtn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); document.querySelectorAll('.card').forEach(x=>x.classList.remove('active')); document.getElementById('case-'+b.dataset.id).classList.add('active'); window.scrollTo({top:0,behavior:'smooth'}); localStorage.setItem('detectiveCase',b.dataset.id)});
 const saved=localStorage.getItem('detectiveCase'); if(saved){document.querySelector(`[data-id="${saved}"]`)?.click()}

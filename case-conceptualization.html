@@ -233,7 +233,6 @@ table { width: 100%; border-collapse: collapse; }
 <div class="container">
 <header>
   <h1>📋 个案概念化练习</h1>
-  <p>随机抽取案例 · 分步完成5P概念化</p>
 </header>
 
 <!-- 步骤指示器 -->
@@ -314,15 +313,6 @@ table { width: 100%; border-collapse: collapse; }
     <p><strong>完整背景：</strong><span id="phase5CaseFullText"></span></p>
   </div>
   
-  <div class="case-display">
-    <h3>5P模型框架</h3>
-    <p><strong>Presenting</strong> - 现在怎么了？</p>
-    <p><strong>Predisposing</strong> - 为什么脆弱？</p>
-    <p><strong>Precipitating</strong> - 什么触发？</p>
-    <p><strong>Perpetuating</strong> - 什么维持？</p>
-    <p><strong>Protective</strong> - 有什么资源？</p>
-  </div>
-  
   <div class="five-p-grid">
     <div class="p-item">
       <label>Presenting（当前问题）</label>
@@ -349,9 +339,9 @@ table { width: 100%; border-collapse: collapse; }
   <button class="btn btn-primary" onclick="goToPhase6()">下一步：活动三 →</button>
 </div>
 
-<!-- 第五步：活动三 - 治疗师的第一句话 -->
+<!-- 第五步：活动三 - 共情来访者的一句话 -->
 <div id="phase6" class="card hidden">
-  <h2>💬 活动三：治疗师的第一句话</h2>
+  <h2>💬 活动三：共情来访者的一句话</h2>
 
   <div class="case-display case-summary-card">
     <h3>当前案例信息</h3>
@@ -363,12 +353,12 @@ table { width: 100%; border-collapse: collapse; }
   
   <div class="case-display">
     <h3>场景设定</h3>
-    <p>你是咨询师，<span id="caseName2"></span>走进咨询室。根据你的5P概念化，你会说的第一句话是什么？</p>
+    <p>你是咨询师，<span id="caseName2"></span>走进咨询室。根据你的5P概念化，你会如何共情来访者？</p>
   </div>
   
   <div class="form-group">
-    <label class="form-label">你见到来访者说的第一句话</label>
-    <textarea id="firstSentence" placeholder="写下你会说的第一句话..."></textarea>
+    <label class="form-label">你共情来访者的一句话</label>
+    <textarea id="firstSentence" placeholder="写下你会共情来访者的一句话..."></textarea>
   </div>
   
   <div class="form-group">
@@ -661,7 +651,7 @@ const cases = [
    fullText:"退休后整天担心儿女。儿子加班晚回来就担心'万一出事怎么办'。女儿出差就睡不着，'飞机安全吗'。知道'不应该这么担心'，但控制不住。'我就是操心的命'。丈夫说'孩子们都大了，你别操心了'。",
    diagnosis:"广泛性焦虑障碍"},
   
-  {id:54,name:"老周2",age:"男 · 60岁 · 退休工人",category:"分离障碍",severity:"中度",
+  {id:54,name:"老周头",age:"男 · 60岁 · 退休工人",category:"分离障碍",severity:"中度",
    symptoms:"突然忘记自己是谁、'我在哪'、'我叫什么名字'、一天后恢复",
    fullText:"老伴去世后，某天早上突然忘记自己是谁。'我在哪'、'我叫什么名字'。被送去医院，检查都正常。一天后突然又想起来了。'我也不知道怎么回事'。女儿说'他受刺激了'。之后又发作过两次。",
    diagnosis:"分离性遗忘症"},
@@ -841,7 +831,7 @@ function generateReferenceAnswer(data) {
       <p><strong>Precipitating 诱发因素：</strong>${precipitating}</p>
       <p><strong>Perpetuating 维持因素：</strong>${perpetuating}</p>
       <p><strong>Protective 保护因素：</strong>${protective}</p>
-      <h4>三、治疗师第一句话参考</h4>
+      <h4>三、共情来访者参考</h4>
       <p>${firstSentence}</p>
       <div class="reference-note">提醒：参考答案不是让你照抄，而是帮助你检查自己的答案有没有做到“从症状走向机制，从诊断走向理解”。好的5P应当能解释：为什么是这个人、为什么是现在、为什么持续、从哪里开始帮助。</div>
     </div>
@@ -954,7 +944,7 @@ async function submitToFeishu(data) {
     'Precipitating': data.p3,
     'Perpetuating': data.p4,
     'Protective': data.p5,
-    '治疗师第一句话': data.firstSentence,
+    '共情来访者': data.firstSentence,
     '选择理由': data.reason,
     '提交时间': data.timestamp
   };
